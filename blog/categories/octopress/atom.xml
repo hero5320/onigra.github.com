@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: octopress | nekogeruge]]></title>
+  <link href="http://onigra.github.io/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://onigra.github.io/"/>
+  <updated>2013-04-29T00:22:03+09:00</updated>
+  <id>http://onigra.github.io/</id>
+  <author>
+    <name><![CDATA[nekogeruge]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[【何番煎じ】OctopressとGitHub Pagesを使用したブログの構築手順]]></title>
+    <link href="http://onigra.github.io/blog/2013/04/28/introduction-of-octopress/"/>
+    <updated>2013-04-28T22:05:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/04/28/introduction-of-octopress</id>
+    <content type="html"><![CDATA[<p><a href="http://ut-gym.jp/">UT Startup Gym</a>の第3期成果発表会も終わった事ですし、<br/>
+前からやろうと思ってた技術ブログを立ち上げました。</p>
+
+<p>日本のエンジニアのブログといえば<a href="http://hatenablog.com/">はてなブログ</a>が多い印象ですが、<br/>
+最近は<a href="http://octopress.org/">Octopress</a>と<a href="http://pages.github.com/">GitHub Pages</a>を使った運用がナウいらしいので<br/>
+流行に乗っかってみます。</p>
+
+<h4>参考（というか、ほぼ同じ内容）</h4>
+
+<p><a href="http://blog.glidenote.com/blog/2011/11/07/install-octopress-on-github/">GithubとOctopressでモダンな技術系ブログを作ってみる</a></p>
+
+<h2>環境</h2>
+
+<p>前提として、gitとrubyがインストールされてる必要があります。</p>
+
+<ul>
+<li>OS X Lion</li>
+<li>ruby 1.9.3p392(rbenv)</li>
+<li>git 1.8.2.1</li>
+</ul>
+
+
+<h2>導入</h2>
+
+<p>Octopressのリポジトリをクローン</p>
+
+<p><code>
+cd ~
+git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+</code></p>
+
+<p>bundle install</p>
+
+<p><code>
+bundle install --path vendor/bundle
+rbenv: version `1.9.3-p194' is not installed
+</code></p>
+
+<p>うん？rubyのバージョンがこれじゃないとインストールできないの？<br/>
+いやいやそんなことはないでしょう。と思い、ファイル一覧を見てみると<br/>
+<code>.rbenv-version</code>というファイルがあることに気付きました。</p>
+
+<p>中を見ると、1.9.3-p194とだけ書いてあります。<br/>
+これを1.9.3-p392に修正すると動くかな？</p>
+
+<p><code>
+bundle install --path vendor/bundle
+Fetching gem metadata from http://rubygems.org/.......
+</code></p>
+
+<p>お、いった。大した問題じゃなくてよかった。<br/>
+gemがインストールできたら、テーマをインストールします。<br/>
+インストールすると、プレビューできるようになります。</p>
+
+<p><code>
+bundle exec rake install
+bundle exec rake preview
+</code></p>
+
+<p>でもデフォルトは嫌なので<a href="https://github.com/imathis/octopress/wiki/3rd-Party-Octopress-Themes">サードパーティー制のテーマを導入します。</a><br/>
+今回は、<a href="https://github.com/lucaslew/whitespace">Whitespace</a>というのを導入しました。<br/>
+インストールの際に、既にインストールしたファイルを上書くか聞かれるのでyを入力します。</p>
+
+<p>zshを使ってて<code>zsh: no matches found</code>が出てしまう方は[をエスケープするか<br/>
+.zshrcに<code>setopt nonomatch</code>を記述しておきましょう。</p>
+
+<p>```
+git clone git://github.com/lucaslew/whitespace.git .themes/whitespace
+bundle exec rake install['whitespace']
+A theme is already installed, proceeding will overwrite existing files. Are you sure? [y/n]</p>
+
+<p>bundle exec rake preview
+```</p>
+
+<p>ブログタイトルなどは_config.ymlの中で設定できます。<br/>
+titleやauthor等を編集すると、ヘッダーやフッターが自動的に変わってくれます。<br/>
+SNSのURLも設定できるようですが、Whitespaceはデフォルトだと何も出ません。<br/>
+他のテーマだとリンクがアイコンで表示されたりするんでしょうね。</p>
+
+<p>```yaml</p>
+
+<h1>-----------------------</h1>
+
+<h1>Main Configs</h1>
+
+<h1>-----------------------</h1>
+
+<p>url: http://yoursite.com
+title: My Octopress Blog
+subtitle: A blogging framework for hackers.
+author: Your Name
+simple_search: http://google.com/search
+description:</p>
+
+<p>...</p>
+
+<p>```</p>
+
+<h2>GitHub Pagesの設定</h2>
+
+<p>Githubにusername.github.comというリポジトリを作成します。
+例えば僕の場合、<a href="https://github.com/onigra">onigraというusername</a>なので<a href="https://github.com/onigra/onigra.github.com">onigra.github.com</a>となります。</p>
+
+<h2>デプロイ</h2>
+
+<p>OctopressをGithub Pagesにデプロイするための設定をします。</p>
+
+<p><code>
+bundle exec rake setup_github_pages
+</code></p>
+
+<p>コマンドを叩くと、Github PagesのリポジトリのURLを入力しろと出ますので、<br/>
+先程作ったリポジトリのURLを入力しましょう。</p>
+
+<p><code>
+Enter the read/write url for your repository:
+git@github.com:onigra/onigra.github.com.git
+</code></p>
+
+<p>入力したら、下記コマンドを入力するとデプロイできます。<br/>
+しばらくすると、<a href="http://onigra.github.io/">http://onigra.github.io/</a>にブログができあがります。</p>
+
+<p><code>
+bundle exec rake generate
+bundle exec rake deploy
+</code></p>
+
+<h2>自己紹介の追加</h2>
+
+<p>自己紹介ページが無い事に気付いたので、追加してみます。<br/>
+rakeタスクを確認すると、new_pageというタスクがあるのでこれを使います。</p>
+
+<p>自己紹介のページは、aboutという名前にします。</p>
+
+<p><code>
+bundle exec rake new_page['about']
+</code></p>
+
+<p>すると、<code>source/about/index.markdown</code>というディレクトリができるので<br/>
+これを編集します。編集したら、ナビゲーションにリンクを追記します。<br/>
+Whitespaceの場合は、 <code>source/_includes/custom/navigation.html</code>を編集すればOKでした。</p>
+
+<h2>感想</h2>
+
+<p>簡単でした。rubyで何か作ったことある人でしたら1時間もあれば立てれるでしょう。markdownで書けるのも楽で良いです。 <br/>
+よくわからない管理ツール使わずに、コマンドラインで全部完結するのもいいですね。エンジニアっぽくて。</p>
+]]></content>
+  </entry>
+  
+</feed>
