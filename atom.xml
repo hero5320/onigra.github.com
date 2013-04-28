@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[nekogeruge]]></title>
   <link href="http://onigra.github.io/atom.xml" rel="self"/>
   <link href="http://onigra.github.io/"/>
-  <updated>2013-04-28T13:21:25+09:00</updated>
+  <updated>2013-04-28T21:20:01+09:00</updated>
   <id>http://onigra.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[nekogeruge]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[first post]]></title>
+    <link href="http://onigra.github.io/blog/2013/04/28/first-post/"/>
+    <updated>2013-04-28T20:39:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/04/28/first-post</id>
+    <content type="html"><![CDATA[<p>this is it</p>
+]]></content>
+  </entry>
   
 </feed>
