@@ -2,10 +2,14 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://onigra.github.io/blog/archives/</loc>
-        <lastmod>2013-04-28T13:06:57+09:00</lastmod>
+        <lastmod>2013-04-28T13:21:03+09:00</lastmod>
     </url>
     <url>
         <loc>http://onigra.github.io/</loc>
-        <lastmod>2013-04-28T13:06:57+09:00</lastmod>
+        <lastmod>2013-04-28T13:21:03+09:00</lastmod>
+    </url>
+    <url>
+        <loc>http://onigra.github.io/robots.txt</loc>
+        <lastmod>2013-04-28T13:21:03+09:00</lastmod>
     </url>
 </urlset>
