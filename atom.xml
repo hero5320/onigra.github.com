@@ -4,7 +4,7 @@
   <title><![CDATA[nekogeruge]]></title>
   <link href="http://onigra.github.io/atom.xml" rel="self"/>
   <link href="http://onigra.github.io/"/>
-  <updated>2013-04-29T00:22:03+09:00</updated>
+  <updated>2013-05-02T10:35:04+09:00</updated>
   <id>http://onigra.github.io/</id>
   <author>
     <name><![CDATA[nekogeruge]]></name>
@@ -12,6 +12,266 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[個人TDDBCを開いてもらった その1]]></title>
+    <link href="http://onigra.github.io/blog/2013/05/01/kojin-tddbc/"/>
+    <updated>2013-05-01T23:05:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/05/01/kojin-tddbc</id>
+    <content type="html"><![CDATA[<p>以前に<a href="https://twitter.com/t_wada">t_wadaさん</a>の<a href="http://d.hatena.ne.jp/t-wada/20100228">RSpec入門記事</a>を写経し、なんとなくユニットテストの書き方とTDDのプロセスは理解したものの、より深くテストについて理解したかったため<a href="https://twitter.com/sunaot">sunaotさん</a>に個人TDDBCをやってもらいました。</p>
+
+<p>ネタはこんな感じです。</p>
+
+<ul>
+<li>自分が作ってるrailsアプリを元にテストコードを書いてみつつリファクタリング</li>
+<li>sunaotさんによるTDDお手本</li>
+</ul>
+
+
+<h2>自分が作ってるアプリのテストを書いてみる</h2>
+
+<p>今回やってみたのは、下記のメソッドです。<br/>
+リファクタリング前のコードを載せるのはかなり抵抗ありますね。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">UsersHelper</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">name_check_of_uniquness</span><span class="p">(</span><span class="n">update_name</span><span class="p">,</span> <span class="n">target_user_id</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">update_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">check_name</span><span class="o">.</span><span class="n">blank?</span> <span class="o">||</span> <span class="n">check_name</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">target_user_id</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>やりたいことはこんな感じです。</p>
+
+<ul>
+<li>usersのnameはユニークであってほしいが、退会を<a href="https://github.com/goncalossilva/rails3_acts_as_paranoid">acts_as_paranoid</a>で管理しているため、nameに一意制約はつけられない</li>
+<li>usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK</li>
+<li>又は、更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK。users.nameは変更せず、usersの他の項目のみ更新する場合があるため</li>
+<li>もともとはhelperに書いてあったものをmodelに移す</li>
+</ul>
+
+
+<p>まず、失敗するテストを書きます。<br/>
+(RSpecは使いませんでした)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># no method errorで失敗する</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">bundle</span> <span class="nb">exec</span> <span class="n">ruby</span> <span class="o">-</span><span class="n">I</span> <span class="nb">test</span> <span class="nb">test</span><span class="o">/</span><span class="n">unit</span><span class="o">/</span><span class="n">user_test</span><span class="o">.</span><span class="n">rb</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>次に、何も実装していないメソッドを書きます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">acts_as_paranoid</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">name_check_of_uniquness</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行し、通ったら実装部分を書いていきます。まずは、下記の実装を行います。</p>
+
+<ul>
+<li>usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK</li>
+</ul>
+
+
+<p>(ついでに、冗長な記述をリファクタリングします)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">acts_as_paranoid</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">name_check_of_uniquness</span><span class="p">(</span><span class="n">update_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">update_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここで一度テストを実行。引数エラーで失敗します。<br/>
+そして、テストを修正します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;new_user_name&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これでテストが通ります。次に、下記の実装を行います。</p>
+
+<ul>
+<li>又は、更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK。users.nameは変更せず、usersの他の項目のみ更新する場合があるため</li>
+</ul>
+
+
+<p>そしてこの実装は、users.nameの更新は無いがusersの他の項目は更新がある場合のケースのテストを行いたいため、テストケースを追加します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># users.id = 1は退会していないアクティブなユーザーのテストデータ</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;new_user_name&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;active_user_name&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここでテストを実行。<code>active_user_name</code>はfixtureで作成しているユーザーなので、falseが返ってきて失敗します。<br/>
+実装に入ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">acts_as_paranoid</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">name_check_of_uniquness</span><span class="p">(</span><span class="n">update_name</span><span class="p">,</span> <span class="n">target_user_id</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">update_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span><span class="o">.</span><span class="n">blank?</span> <span class="o">||</span> <span class="n">check_name</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">target_user_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストが通りました。さらに、falseを返すパターンもテストケースに追加したいため下記テストを追加します。</p>
+
+<ul>
+<li>ユーザー名は一致しているが、パラメータで渡されたtarget_user_idが一致していなかったらエラーを返す</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;new_user_name&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;active_user_name&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">test</span> <span class="s1">&#39;#ユーザー名は一致しているが、パラメータで渡されたユーザーIDと一致していないとエラー&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="o">!</span><span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;active_user_name&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こんな感じでユニットテストを書きました。<br/>
+コードへの突っ込みはあると思いますが、ユニットテストを考えるプロセスと書くプロセスについては理解を深めることができました。</p>
+
+<p>ちょっと長くなったので、TDDお手本は次回に回します。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[【何番煎じ】OctopressとGitHub Pagesを使用したブログの構築手順]]></title>
