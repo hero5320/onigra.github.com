@@ -9,7 +9,8 @@ footer: true
 ## nekogeruge_987  
 
 へっぽこITエンジニア  
-rubyとSQLが好き  
+rubyとSQLが好き（というか、それしかできない）  
+UT Startup Gym 第3期優勝  
 仕事ではよくDBをいじってます  
 
 [twitter](https://twitter.com/)  
