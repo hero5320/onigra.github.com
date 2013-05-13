@@ -9,7 +9,9 @@
   <meta name="author" content="nekogeruge">
 
   
-  <meta name="description" content="前回の続きです。 TDDはテンポが重要 sunaotさん曰くTDDはテンポが重要で、これらの一連の流れがサクサクいくようになってくるとコーディングが楽しいとのこと。なので、bundle execでテンポが悪くなるのが好きじゃないらしいです。 sunaotさんによるTDDお手本 &hellip;">
+  <meta name="description" content="MySQLのログをtd-agentで集めてriakに突っ込んで遊ぼうかなーと思って私物のMacに環境構築してたら、
+どうもMySQLの構成ファイルの位置がおかしい。
+調べてみると、Mac買ってよくわかってない頃にMySQLをOSX用のインストーラーでインスコしてて、 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +66,115 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/13/mysql-cleanup-and-upgrade/">MacのMySQLがなんかおかしかったので環境整理するついでに5.6にした</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-13T01:18:00+09:00" pubdate data-updated="true">May 13<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>MySQLのログを<a href="https://github.com/treasure-data/td-agent">td-agent</a>で集めて<a href="http://basho.com/riak/">riak</a>に突っ込んで遊ぼうかなーと思って私物のMacに環境構築してたら、
+どうもMySQLの構成ファイルの位置がおかしい。<br/>
+調べてみると、Mac買ってよくわかってない頃にMySQLをOSX用のインストーラーでインスコしてて、その後Homebrewでもインスコしてたのでなんかおかしくなってたらしい。備忘を兼ねて手順を晒します。</p>
+
+<p>とりあえずインストーラー版もHomebrew版も両方アンインストールして、<a href="http://dic.nicovideo.jp/a/%E3%81%9B%E3%81%A3%E3%81%8B%E3%81%8F%E3%81%A0%E3%81%8B%E3%82%89">せっかくだから</a>バージョン5.6を選んでみます。</p>
+
+<p>Homebrew版MySQLのアンインストール</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew uninstall mysql </span></code></pre></td></tr></table></div></figure>
+
+
+<p>そして、Homebrewでは5.5.29をインスコしてるはずなのに、なぜか5.5.24というファイルが存在する…</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd /usr/local
+</span><span class='line'>
+</span><span class='line'># ファイルの削除
+</span><span class='line'>sudo rm -rf mysql-5.5.24-osx10.6-x86_64
+</span><span class='line'>
+</span><span class='line'># シンボリックリンクの削除
+</span><span class='line'>sudo rm -rf mysql</span></code></pre></td></tr></table></div></figure>
+
+
+<p>余計なファイルの削除</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd /Library/Caches/Homebrew/
+</span><span class='line'>rm -rf mysql*</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>brew install</code>の前にupdate &amp; upgrade</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew update && brew upgrade</span></code></pre></td></tr></table></div></figure>
+
+
+<p>HomebrewでMySQLのインストール手順はググれば腐るほど<a href="http://www.karakaram.com/install-mysql56-homebrew">出るので</a>割愛。<br/>
+さて、無事MySQLがインストールできたのでrailアプリを動かしてみる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle exec rails s
+</span><span class='line'>
+</span><span class='line'>Incorrect MySQL client library version! This gem was compiled for 5.5.29 but the client library is 5.6.10</span></code></pre></td></tr></table></div></figure>
+
+
+<p>怒られました。ググってみると、<a href="http://klalex.com/2013/02/upgrading-mysql-to-5-6-10-on-mac-os-and-fixing-mysql2-gem/">mysql2をインストールしなおせばOKっぽい</a>ですね。でもbundlerで管理してるgemを単体でアンインストールして入れ直す手順がよくわからなかったので、ダサいですが全部インストールしなおしました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rm -rf .bundle
+</span><span class='line'>rm -rf vendor/bundle
+</span><span class='line'>
+</span><span class='line'>bundle install --path vendor/bundle
+</span><span class='line'>bundle exec rake db:create
+</span><span class='line'>bundle exec rake db:migrate
+</span><span class='line'>bundle exec rails s</span></code></pre></td></tr></table></div></figure>
+
+
+<p>動きました。これでキレイになりました。</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1166,6 +1277,10 @@ Whitespaceの場合は、 <code>source/_includes/custom/navigation.html</code>�
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/13/mysql-cleanup-and-upgrade/">MacのMySQLがなんかおかしかったので環境整理するついでに5.6にした</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2013/05/06/kojin-tddbc-2/">個人TDDBCを開いてもらった その2</a>

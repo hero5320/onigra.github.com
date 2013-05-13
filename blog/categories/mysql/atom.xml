@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: MySQL | nekogeruge]]></title>
+  <link href="http://onigra.github.io/blog/categories/mysql/atom.xml" rel="self"/>
+  <link href="http://onigra.github.io/"/>
+  <updated>2013-05-13T12:52:55+09:00</updated>
+  <id>http://onigra.github.io/</id>
+  <author>
+    <name><![CDATA[nekogeruge]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[MacのMySQLがなんかおかしかったので環境整理するついでに5.6にした]]></title>
+    <link href="http://onigra.github.io/blog/2013/05/13/mysql-cleanup-and-upgrade/"/>
+    <updated>2013-05-13T01:18:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/05/13/mysql-cleanup-and-upgrade</id>
+    <content type="html"><![CDATA[<p>MySQLのログを<a href="https://github.com/treasure-data/td-agent">td-agent</a>で集めて<a href="http://basho.com/riak/">riak</a>に突っ込んで遊ぼうかなーと思って私物のMacに環境構築してたら、
+どうもMySQLの構成ファイルの位置がおかしい。<br/>
+調べてみると、Mac買ってよくわかってない頃にMySQLをOSX用のインストーラーでインスコしてて、その後Homebrewでもインスコしてたのでなんかおかしくなってたらしい。備忘を兼ねて手順を晒します。</p>
+
+<p>とりあえずインストーラー版もHomebrew版も両方アンインストールして、<a href="http://dic.nicovideo.jp/a/%E3%81%9B%E3%81%A3%E3%81%8B%E3%81%8F%E3%81%A0%E3%81%8B%E3%82%89">せっかくだから</a>バージョン5.6を選んでみます。</p>
+
+<p>Homebrew版MySQLのアンインストール</p>
+
+<p><code>
+brew uninstall mysql
+</code></p>
+
+<p>そして、Homebrewでは5.5.29をインスコしてるはずなのに、なぜか5.5.24というファイルが存在する…</p>
+
+<p>```
+cd /usr/local</p>
+
+<h1>ファイルの削除</h1>
+
+<p>sudo rm -rf mysql-5.5.24-osx10.6-x86_64</p>
+
+<h1>シンボリックリンクの削除</h1>
+
+<p>sudo rm -rf mysql
+```</p>
+
+<p>余計なファイルの削除</p>
+
+<p><code>
+cd /Library/Caches/Homebrew/
+rm -rf mysql*
+</code></p>
+
+<p><code>brew install</code>の前にupdate &amp; upgrade</p>
+
+<p><code>
+brew update &amp;&amp; brew upgrade
+</code></p>
+
+<p>HomebrewでMySQLのインストール手順はググれば腐るほど<a href="http://www.karakaram.com/install-mysql56-homebrew">出るので</a>割愛。<br/>
+さて、無事MySQLがインストールできたのでrailアプリを動かしてみる。</p>
+
+<p>```
+bundle exec rails s</p>
+
+<p>Incorrect MySQL client library version! This gem was compiled for 5.5.29 but the client library is 5.6.10
+```</p>
+
+<p>怒られました。ググってみると、<a href="http://klalex.com/2013/02/upgrading-mysql-to-5-6-10-on-mac-os-and-fixing-mysql2-gem/">mysql2をインストールしなおせばOKっぽい</a>ですね。でもbundlerで管理してるgemを単体でアンインストールして入れ直す手順がよくわからなかったので、ダサいですが全部インストールしなおしました。</p>
+
+<p>```
+rm -rf .bundle
+rm -rf vendor/bundle</p>
+
+<p>bundle install --path vendor/bundle
+bundle exec rake db:create
+bundle exec rake db:migrate
+bundle exec rails s
+```</p>
+
+<p>動きました。これでキレイになりました。</p>
+]]></content>
+  </entry>
+  
+</feed>
