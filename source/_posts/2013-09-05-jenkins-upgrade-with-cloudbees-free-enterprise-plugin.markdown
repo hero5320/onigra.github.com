@@ -30,5 +30,5 @@ Jenkinsのプラグインで[CloudBees Free Enterprise Plugins](https://wiki.jen
 
 こんな感じで事なきを得たのですが、CloudBees Free Enterprise Pluginsなどの日本語情報がほぼなかったので焦りました。Folder Pluginsとか[Build Flow Plugin](https://wiki.jenkins-ci.org/display/JENKINS/Build+Flow+Plugin)とか凄く便利だと思うんですけど、使ってる人見ないですね。自分はもう辞めてしまった[Jenkins大好きおじさん](https://github.com/shiraji)からこの辺のプラグインを教わりました。
 
-しかし、Build Flow Pluginは「読めないデータ」が大量に出るのが気になります。。。普通にジョブは動いてるので問題は無さそうなんですが。。。この辺の情報ってどっかまとまってないんですかね？
+しかし、Build Flow Pluginは「読めないデータ」が大量に出るのが気になります。。。普通にジョブは動いてるので問題は無さそうなんですが。。。この辺の情報ってどっかまとまってないのかな？
 
