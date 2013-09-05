@@ -9,7 +9,7 @@
   <meta name="author" content="nekogeruge">
 
   
-  <meta name="description" content="小物エンジニアの会という会があったので、最近よくさわっているMariaDBについて話をしてきました。割とウケて嬉しかったです。 Maria db from nekogeruge_987 まだMulti-source ReplicationやCassandra Storage Engine、 &hellip;">
+  <meta name="description" content="日本語の記事がほとんど見当たらなかったので書きます。 JenkinsのプラグインでCloudBees Free Enterprise Pluginsというのがあり、会社でがっつり使われてるのですが、バージョンが上がった際にcloudbeesのアカウント登録が必要になったようです。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -64,6 +64,66 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/09/05/jenkins-upgrade-with-cloudbees-free-enterprise-plugin/">JenkinsのアップデートしたらCloudbees Free Enterprise Plugins関連で焦った話</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-05T16:19:00+09:00" pubdate data-updated="true">Sep 5<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>日本語の記事がほとんど見当たらなかったので書きます。</p>
+
+<p>Jenkinsのプラグインで<a href="https://wiki.jenkins-ci.org/display/JENKINS/CloudBees+Free+Enterprise+Plugins">CloudBees Free Enterprise Plugins</a>というのがあり、会社でがっつり使われてるのですが、バージョンが上がった際に<a href="http://www.cloudbees.com/">cloudbees</a>のアカウント登録が必要になったようです。サインアップしてこのプラグインを使う事は無料なのですが、けっこう焦りました。</p>
+
+<ol>
+<li><p>こんな感じの画面が出ます
+<img src="https://wiki.jenkins-ci.org/download/attachments/60917181/Screen+shot+2012-04-16+at+22.29.44.png?version=1&amp;modificationDate=1334611834000" alt="サインアップしろよ！" /></p></li>
+<li><p>既にアカウントを作成している場合は、 <code>I already have a CloudBees account, 〜</code> にチェックしてCloudbeesサービスへのログイン情報を入力します
+<img src="https://wiki.jenkins-ci.org/download/attachments/60917181/Screen+shot+2012-04-16+at+22.30.45.png?version=1&amp;modificationDate=1334611949000" alt="ログインしろよ！" /></p></li>
+<li><p>サインアップはGithubアカウントでも行えるのでサクッとできます
+<img src="/images/cloudbees_signup.jpg" alt="サインアップ画面" /></p></li>
+<li><p>サインアップせずに先に進んでしまうと、bootstrapのアラートみたいなのが出て怒られます。当然、プラグインは使用できません
+<img src="/images/signup_shiro.jpg" alt="サインアップしろって言ってんだろ！" /></p></li>
+<li><p>アラートに出てる <code>Add CloudBees credentials!</code> を押すと Jenkinsの管理 -> 認証情報の管理 に遷移します。すると、 「認証情報の追加」の所に <code>CloudBees User Account</code> というのが追加されているので、ここからログイン情報を入力し、改めてプラグインをインストールすると使用できるようになります
+<img src="/images/cloudbees_account_irero.jpg" alt="ログイン情報入力" /></p></li>
+</ol>
+
+
+<p>ここでちょっとわからなかったのが、Githubアカウントのパスワードでは認証が通らなかったことです。パスワード再登録したので問題なかったのですが、謎です。</p>
+
+<p>これでCloudBees Free Enterprise Pluginsが使用できるようになります。4でサインアップせずに先に進んでしまうと、既にインストールしてたプラグインが使えなくなってるので、インストールしなおしましょう。</p>
+
+<p>こんな感じで事なきを得たのですが、CloudBees Free Enterprise Pluginsなどの日本語情報がほぼなかったので焦りました。Folder Pluginsとか<a href="https://wiki.jenkins-ci.org/display/JENKINS/Build+Flow+Plugin">Build Flow Plugin</a>とか凄く便利だと思うんですけど、使ってる人見ないですね。自分はもう辞めてしまった<a href="https://github.com/shiraji">Jenkins大好きおじさん</a>からこの辺のプラグインを教わりました。</p>
+
+<p>しかし、Build Flow Pluginは「読めないデータ」が大量に出るのが気になります。。。普通にジョブは動いてるので問題は無さそうなんですが。。。この辺の情報ってどっかまとまってないのかな？</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1328,6 +1388,10 @@ Whitespaceの場合は、 <code>source/_includes/custom/navigation.html</code>�
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/09/05/jenkins-upgrade-with-cloudbees-free-enterprise-plugin/">JenkinsのアップデートしたらCloudbees Free Enterprise Plugins関連で焦った話</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/06/29/komono-engineer-no-kai/">小物エンジニアの会にてMariaDBの話をしてきました #MariaDB #小物エンジニアの会</a>
       </li>
     
@@ -1341,10 +1405,6 @@ Whitespaceの場合は、 <code>source/_includes/custom/navigation.html</code>�
     
       <li class="post">
         <a href="/blog/2013/05/01/kojin-tddbc/">個人TDDBCを開いてもらった その1</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/28/introduction-of-octopress/">【何番煎じ】OctopressとGitHub Pagesを使用したブログの構築手順</a>
       </li>
     
   </ul>

@@ -4,7 +4,7 @@
   <title><![CDATA[nekogeruge]]></title>
   <link href="http://onigra.github.io/atom.xml" rel="self"/>
   <link href="http://onigra.github.io/"/>
-  <updated>2013-06-29T02:34:57+09:00</updated>
+  <updated>2013-09-05T18:25:17+09:00</updated>
   <id>http://onigra.github.io/</id>
   <author>
     <name><![CDATA[nekogeruge]]></name>
@@ -12,6 +12,39 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JenkinsのアップデートしたらCloudbees Free Enterprise Plugins関連で焦った話]]></title>
+    <link href="http://onigra.github.io/blog/2013/09/05/jenkins-upgrade-with-cloudbees-free-enterprise-plugin/"/>
+    <updated>2013-09-05T16:19:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/09/05/jenkins-upgrade-with-cloudbees-free-enterprise-plugin</id>
+    <content type="html"><![CDATA[<p>日本語の記事がほとんど見当たらなかったので書きます。</p>
+
+<p>Jenkinsのプラグインで<a href="https://wiki.jenkins-ci.org/display/JENKINS/CloudBees+Free+Enterprise+Plugins">CloudBees Free Enterprise Plugins</a>というのがあり、会社でがっつり使われてるのですが、バージョンが上がった際に<a href="http://www.cloudbees.com/">cloudbees</a>のアカウント登録が必要になったようです。サインアップしてこのプラグインを使う事は無料なのですが、けっこう焦りました。</p>
+
+<ol>
+<li><p>こんな感じの画面が出ます
+<img src="https://wiki.jenkins-ci.org/download/attachments/60917181/Screen+shot+2012-04-16+at+22.29.44.png?version=1&amp;modificationDate=1334611834000" alt="サインアップしろよ！" /></p></li>
+<li><p>既にアカウントを作成している場合は、 <code>I already have a CloudBees account, 〜</code> にチェックしてCloudbeesサービスへのログイン情報を入力します
+<img src="https://wiki.jenkins-ci.org/download/attachments/60917181/Screen+shot+2012-04-16+at+22.30.45.png?version=1&amp;modificationDate=1334611949000" alt="ログインしろよ！" /></p></li>
+<li><p>サインアップはGithubアカウントでも行えるのでサクッとできます
+<img src="http://onigra.github.io/images/cloudbees_signup.jpg" alt="サインアップ画面" /></p></li>
+<li><p>サインアップせずに先に進んでしまうと、bootstrapのアラートみたいなのが出て怒られます。当然、プラグインは使用できません
+<img src="http://onigra.github.io/images/signup_shiro.jpg" alt="サインアップしろって言ってんだろ！" /></p></li>
+<li><p>アラートに出てる <code>Add CloudBees credentials!</code> を押すと Jenkinsの管理 -> 認証情報の管理 に遷移します。すると、 「認証情報の追加」の所に <code>CloudBees User Account</code> というのが追加されているので、ここからログイン情報を入力し、改めてプラグインをインストールすると使用できるようになります
+<img src="http://onigra.github.io/images/cloudbees_account_irero.jpg" alt="ログイン情報入力" /></p></li>
+</ol>
+
+
+<p>ここでちょっとわからなかったのが、Githubアカウントのパスワードでは認証が通らなかったことです。パスワード再登録したので問題なかったのですが、謎です。</p>
+
+<p>これでCloudBees Free Enterprise Pluginsが使用できるようになります。4でサインアップせずに先に進んでしまうと、既にインストールしてたプラグインが使えなくなってるので、インストールしなおしましょう。</p>
+
+<p>こんな感じで事なきを得たのですが、CloudBees Free Enterprise Pluginsなどの日本語情報がほぼなかったので焦りました。Folder Pluginsとか<a href="https://wiki.jenkins-ci.org/display/JENKINS/Build+Flow+Plugin">Build Flow Plugin</a>とか凄く便利だと思うんですけど、使ってる人見ないですね。自分はもう辞めてしまった<a href="https://github.com/shiraji">Jenkins大好きおじさん</a>からこの辺のプラグインを教わりました。</p>
+
+<p>しかし、Build Flow Pluginは「読めないデータ」が大量に出るのが気になります。。。普通にジョブは動いてるので問題は無さそうなんですが。。。この辺の情報ってどっかまとまってないのかな？</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[小物エンジニアの会にてMariaDBの話をしてきました #MariaDB #小物エンジニアの会]]></title>
