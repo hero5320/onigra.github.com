@@ -1,0 +1,1104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[nekogeruge]]></title>
+  <link href="http://onigra.github.io/atom.xml" rel="self"/>
+  <link href="http://onigra.github.io/"/>
+  <updated>2013-06-29T02:34:57+09:00</updated>
+  <id>http://onigra.github.io/</id>
+  <author>
+    <name><![CDATA[nekogeruge]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[小物エンジニアの会にてMariaDBの話をしてきました #MariaDB #小物エンジニアの会]]></title>
+    <link href="http://onigra.github.io/blog/2013/06/29/komono-engineer-no-kai/"/>
+    <updated>2013-06-29T01:47:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/06/29/komono-engineer-no-kai</id>
+    <content type="html"><![CDATA[<p><a href="http://atnd.org/events/40593">小物エンジニアの会</a>という会があったので、最近よくさわっているMariaDBについて話をしてきました。割とウケて嬉しかったです。</p>
+
+<iframe src="http://www.slideshare.net/slideshow/embed_code/23616675" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen webkitallowfullscreen mozallowfullscreen> </iframe>
+
+
+<p> <div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/nekogeruge_987/maria-db" title="Maria db" target="_blank">Maria db</a> </strong> from <strong><a href="http://www.slideshare.net/nekogeruge_987" target="_blank">nekogeruge_987</a></strong> </div></p>
+
+<p>まだMulti-source ReplicationやCassandra Storage Engine、Dynamic columnsなどの独自機能を使い込んでいないので検証不足ではありますが、十分実用に値する性能でした。<br/>
+今の所目立った欠点というのは見当たらないという印象です。積極的に使って行きたいと思います。</p>
+
+<p>会については、ふざけた名前ではありますがインターネットの人達も多く、他の方の発表も面白かったです。懇親会も洒落た店ではなく、コンビニで買って公園で行うのも非常に小物っぽくて良かったです。<br/>
+主催のしもむらさん、あんちべさん、ありがとうございました。次回も楽しみにしてます。</p>
+
+<p>余談ですが、ストリートビュー車が駐車されてるのを見かけました。</p>
+
+<p><img src="http://onigra.github.io/images/street_view_car.jpg" alt="street_view_car" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[MacのMySQLがなんかおかしかったので環境整理するついでに5.6にした]]></title>
+    <link href="http://onigra.github.io/blog/2013/05/13/mysql-cleanup-and-upgrade/"/>
+    <updated>2013-05-13T01:18:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/05/13/mysql-cleanup-and-upgrade</id>
+    <content type="html"><![CDATA[<p>MySQLのログを<a href="https://github.com/treasure-data/td-agent">td-agent</a>で集めて<a href="http://basho.com/riak/">riak</a>に突っ込んで遊ぼうかなーと思って私物のMacに環境構築してたら、
+どうもMySQLの構成ファイルの位置がおかしい。<br/>
+調べてみると、Mac買ってよくわかってない頃にMySQLをOSX用のインストーラーでインスコしてて、その後Homebrewでもインスコしてたのでなんかおかしくなってたらしい。備忘を兼ねて手順を晒します。</p>
+
+<p>とりあえずインストーラー版もHomebrew版も両方アンインストールして、<a href="http://dic.nicovideo.jp/a/%E3%81%9B%E3%81%A3%E3%81%8B%E3%81%8F%E3%81%A0%E3%81%8B%E3%82%89">せっかくだから</a>バージョン5.6を選んでみます。</p>
+
+<p>Homebrew版MySQLのアンインストール</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew uninstall mysql </span></code></pre></td></tr></table></div></figure>
+
+
+<p>そして、Homebrewでは5.5.29をインスコしてるはずなのに、なぜか5.5.24というファイルが存在する…</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd /usr/local
+</span><span class='line'>
+</span><span class='line'># ファイルの削除
+</span><span class='line'>sudo rm -rf mysql-5.5.24-osx10.6-x86_64
+</span><span class='line'>
+</span><span class='line'># シンボリックリンクの削除
+</span><span class='line'>sudo rm -rf mysql</span></code></pre></td></tr></table></div></figure>
+
+
+<p>余計なファイルの削除</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd /Library/Caches/Homebrew/
+</span><span class='line'>rm -rf mysql*</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>brew install</code>の前にupdate &amp; upgrade</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew update && brew upgrade</span></code></pre></td></tr></table></div></figure>
+
+
+<p>HomebrewでMySQLのインストール手順はググれば腐るほど<a href="http://www.karakaram.com/install-mysql56-homebrew">出るので</a>割愛。<br/>
+さて、無事MySQLがインストールできたのでrailアプリを動かしてみる。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle exec rails s
+</span><span class='line'>
+</span><span class='line'>Incorrect MySQL client library version! This gem was compiled for 5.5.29 but the client library is 5.6.10</span></code></pre></td></tr></table></div></figure>
+
+
+<p>怒られました。ググってみると、<a href="http://klalex.com/2013/02/upgrading-mysql-to-5-6-10-on-mac-os-and-fixing-mysql2-gem/">mysql2をインストールしなおせばOKっぽい</a>ですね。でもbundlerで管理してるgemを単体でアンインストールして入れ直す手順がよくわからなかったので、ダサいですが全部インストールしなおしました。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rm -rf .bundle
+</span><span class='line'>rm -rf vendor/bundle
+</span><span class='line'>
+</span><span class='line'>bundle install --path vendor/bundle
+</span><span class='line'>bundle exec rake db:create
+</span><span class='line'>bundle exec rake db:migrate
+</span><span class='line'>bundle exec rails s</span></code></pre></td></tr></table></div></figure>
+
+
+<p>動きました。これでキレイになりました。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[個人TDDBCを開いてもらった その2]]></title>
+    <link href="http://onigra.github.io/blog/2013/05/06/kojin-tddbc-2/"/>
+    <updated>2013-05-06T15:54:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/05/06/kojin-tddbc-2</id>
+    <content type="html"><![CDATA[<p><a href="http://onigra.github.io/blog/2013/05/01/kojin-tddbc/">前回</a>の続きです。</p>
+
+<h2>TDDはテンポが重要</h2>
+
+<p>sunaotさん曰くTDDはテンポが重要で、これらの一連の流れがサクサクいくようになってくるとコーディングが楽しいとのこと。なので、bundle execでテンポが悪くなるのが好きじゃないらしいです。</p>
+
+<h2>sunaotさんによるTDDお手本</h2>
+
+<p>うまくノリを伝えられるか自信が無いですが、僕の中で非常に分かりやすかったので書き出してみます。渡した数を2倍にして返すという単純なメソッドを例にして説明してくださいました。</p>
+
+<p>まずは、テストコードを書きます。</p>
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;test/unit&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TC_Foo</span> <span class="o">&lt;</span> <span class="ss">Test</span><span class="p">:</span><span class="ss">:Unit</span><span class="o">::</span><span class="no">TestCase</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Run</span> <span class="ss">options</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="no">Finished</span> <span class="n">tests</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000401</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mo">0000</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mo">0000</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">0</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">0</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">0</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>実装コードを書きます。まだ中身は空っぽです。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Foo</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;test/unit&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;./foo&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TC_Foo</span> <span class="o">&lt;</span> <span class="ss">Test</span><span class="p">:</span><span class="ss">:Unit</span><span class="o">::</span><span class="no">TestCase</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Run</span> <span class="ss">options</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="no">Finished</span> <span class="n">tests</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000363</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mo">0000</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mo">0000</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">0</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">0</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">0</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを書いていきます。12を渡してdoubleというメソッドを呼ぶと24が返ってくるというテストです。</p>
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;test/unit&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;./foo&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TC_Foo</span> <span class="o">&lt;</span> <span class="ss">Test</span><span class="p">:</span><span class="ss">:Unit</span><span class="o">::</span><span class="no">TestCase</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">setup</span>
+</span><span class='line'>    <span class="vi">@foo</span> <span class="o">=</span> <span class="no">Foo</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">test_double</span>
+</span><span class='line'>    <span class="n">assert_equal</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="vi">@foo</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Run</span> <span class="ss">options</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">E</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Finished</span> <span class="n">tests</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">00051</span><span class="mi">9</span><span class="n">s</span><span class="p">,</span> <span class="mi">1926</span><span class="o">.</span><span class="mi">7823</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mo">0000</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="mi">1</span><span class="p">)</span> <span class="ss">Error</span><span class="p">:</span>
+</span><span class='line'><span class="n">test_double</span><span class="p">(</span><span class="no">TC_Foo</span><span class="p">):</span>
+</span><span class='line'><span class="ss">ArgumentError</span><span class="p">:</span> <span class="n">wrong</span> <span class="n">number</span> <span class="n">of</span> <span class="n">arguments</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>    <span class="sr">/Users/ne</span><span class="n">kogeruge</span><span class="o">/</span><span class="n">tdd</span><span class="o">/</span><span class="n">foo_test</span><span class="o">.</span><span class="n">rb</span><span class="p">:</span><span class="mi">6</span><span class="ss">:in</span> <span class="sb">`initialize&#39;</span>
+</span><span class='line'><span class="sb">    /Users/nekogeruge/tdd/foo_test.rb:6:in `</span><span class="kp">new</span><span class="s1">&#39;</span>
+</span><span class='line'><span class="s1">    /Users/nekogeruge/tdd/foo_test.rb:6:in `setup&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">1</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">0</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">1</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>引数が不正だと怒られました。コンストラクタを作成します。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Foo</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">int</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@int</span> <span class="o">=</span> <span class="n">int</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Run</span> <span class="ss">options</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">E</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Finished</span> <span class="n">tests</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000515</span><span class="n">s</span><span class="p">,</span> <span class="mi">1941</span><span class="o">.</span><span class="mi">7476</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="o">.</span><span class="mo">0000</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="mi">1</span><span class="p">)</span> <span class="ss">Error</span><span class="p">:</span>
+</span><span class='line'><span class="n">test_double</span><span class="p">(</span><span class="no">TC_Foo</span><span class="p">):</span>
+</span><span class='line'><span class="ss">NoMethodError</span><span class="p">:</span> <span class="n">undefined</span> <span class="nb">method</span> <span class="sb">`double&#39; for #&lt;Foo:0x007fc983890fe0 @int=12&gt;</span>
+</span><span class='line'><span class="sb">    /Users/nekogeruge/tdd/foo_test.rb:10:in `</span><span class="n">test_double</span><span class="err">&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">1</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">0</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">1</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>doubleというメソッドが無いよと怒られました。はい、作ります。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Foo</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">int</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@int</span> <span class="o">=</span> <span class="n">int</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">double</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Run</span> <span class="ss">options</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">F</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Finished</span> <span class="n">tests</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000665</span><span class="n">s</span><span class="p">,</span> <span class="mi">1503</span><span class="o">.</span><span class="mi">7594</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">1503</span><span class="o">.</span><span class="mi">7594</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="mi">1</span><span class="p">)</span> <span class="ss">Failure</span><span class="p">:</span>
+</span><span class='line'><span class="n">test_double</span><span class="p">(</span><span class="no">TC_Foo</span><span class="p">)</span> <span class="o">[</span><span class="sr">/Users/ne</span><span class="n">kogeruge</span><span class="o">/</span><span class="n">tdd</span><span class="o">/</span><span class="n">foo_test</span><span class="o">.</span><span class="n">rb</span><span class="p">:</span><span class="mi">10</span><span class="o">]</span><span class="p">:</span>
+</span><span class='line'><span class="o">&lt;</span><span class="mi">24</span><span class="o">&gt;</span> <span class="n">expected</span> <span class="n">but</span> <span class="n">was</span>
+</span><span class='line'><span class="o">&lt;</span><span class="kp">nil</span><span class="o">&gt;.</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">1</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">1</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">1</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">0</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>doubleの返してくるものがnilなので怒られました。このテストを通す為の一番簡単な実装をしてみます。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Foo</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">int</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@int</span> <span class="o">=</span> <span class="n">int</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">double</span>
+</span><span class='line'>    <span class="mi">24</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Run</span> <span class="ss">options</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Finished</span> <span class="n">tests</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000464</span><span class="n">s</span><span class="p">,</span> <span class="mi">2155</span><span class="o">.</span><span class="mi">1724</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">2155</span><span class="o">.</span><span class="mi">1724</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">1</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">1</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">0</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通りました。次に、別のデータを使ったパターンのテストを書きます。</p>
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;test/unit&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;./foo&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TC_Foo</span> <span class="o">&lt;</span> <span class="ss">Test</span><span class="p">:</span><span class="ss">:Unit</span><span class="o">::</span><span class="no">TestCase</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">setup</span>
+</span><span class='line'>    <span class="vi">@foo</span> <span class="o">=</span> <span class="no">Foo</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@moo</span> <span class="o">=</span> <span class="no">Foo</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">test_double</span>
+</span><span class='line'>    <span class="n">assert_equal</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="vi">@foo</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">test_another</span>
+</span><span class='line'>    <span class="n">assert_equal</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="vi">@moo</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Run</span> <span class="ss">options</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">F</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Finished</span> <span class="n">tests</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000714</span><span class="n">s</span><span class="p">,</span> <span class="mi">2801</span><span class="o">.</span><span class="mi">1204</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">2801</span><span class="o">.</span><span class="mi">1204</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="mi">1</span><span class="p">)</span> <span class="ss">Failure</span><span class="p">:</span>
+</span><span class='line'><span class="n">test_another</span><span class="p">(</span><span class="no">TC_Foo</span><span class="p">)</span> <span class="o">[</span><span class="sr">/Users/ne</span><span class="n">kogeruge</span><span class="o">/</span><span class="n">tdd</span><span class="o">/</span><span class="n">foo_test</span><span class="o">.</span><span class="n">rb</span><span class="p">:</span><span class="mi">15</span><span class="o">]</span><span class="p">:</span>
+</span><span class='line'><span class="o">&lt;</span><span class="mi">30</span><span class="o">&gt;</span> <span class="n">expected</span> <span class="n">but</span> <span class="n">was</span>
+</span><span class='line'><span class="o">&lt;</span><span class="mi">24</span><span class="o">&gt;.</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">2</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">2</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">1</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">0</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然コケます。なので、本格的な実装に入ります。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Foo</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">int</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@int</span> <span class="o">=</span> <span class="n">int</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">double</span>
+</span><span class='line'>    <span class="vi">@int</span> <span class="o">*</span> <span class="mi">2</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Run</span> <span class="ss">options</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">.</span><span class="n">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Finished</span> <span class="n">tests</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000537</span><span class="n">s</span><span class="p">,</span> <span class="mi">3724</span><span class="o">.</span><span class="mi">3948</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">3724</span><span class="o">.</span><span class="mi">3948</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">2</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">2</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">0</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>通りました。2つ目のテストは考えを整理する為に書いたもので不要なので消します。残したければ残しておいても問題ありません。</p>
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;test/unit&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;./foo&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TC_Foo</span> <span class="o">&lt;</span> <span class="ss">Test</span><span class="p">:</span><span class="ss">:Unit</span><span class="o">::</span><span class="no">TestCase</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">setup</span>
+</span><span class='line'>    <span class="vi">@foo</span> <span class="o">=</span> <span class="no">Foo</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">test_double</span>
+</span><span class='line'>    <span class="n">assert_equal</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="vi">@foo</span><span class="o">.</span><span class="n">double</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>念のためテストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Run</span> <span class="ss">options</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Running tests:</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Finished</span> <span class="n">tests</span> <span class="k">in</span> <span class="mi">0</span><span class="o">.</span><span class="mo">000450</span><span class="n">s</span><span class="p">,</span> <span class="mi">2222</span><span class="o">.</span><span class="mi">2222</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mi">2222</span><span class="o">.</span><span class="mi">2222</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">1</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">1</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">0</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これで実装完了です。<br/>
+こうして書き出してみると、<a href="http://d.hatena.ne.jp/t-wada/20100228">t_wadaさんの記事</a>とプロセスは全く一緒ですね。やはりお手本を見せてもらうのは分かりやすかったです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[個人TDDBCを開いてもらった その1]]></title>
+    <link href="http://onigra.github.io/blog/2013/05/01/kojin-tddbc/"/>
+    <updated>2013-05-01T23:05:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/05/01/kojin-tddbc</id>
+    <content type="html"><![CDATA[<p>以前に<a href="https://twitter.com/t_wada">t_wadaさん</a>の<a href="http://d.hatena.ne.jp/t-wada/20100228">RSpec入門記事</a>を写経し、なんとなくユニットテストの書き方とTDDのプロセスは理解したものの、より深くテストについて理解したかったため<a href="https://twitter.com/sunaot">sunaotさん</a>に個人TDDBCをやってもらいました。</p>
+
+<p>ネタはこんな感じです。</p>
+
+<ul>
+<li>自分が作ってるrailsアプリを元にテストコードを書いてみつつリファクタリング</li>
+<li>sunaotさんによるTDDお手本</li>
+</ul>
+
+
+<h2>自分が作ってるアプリのテストを書いてみる</h2>
+
+<p>今回やってみたのは、下記のメソッドです。<br/>
+リファクタリング前のコードを載せるのはかなり抵抗ありますね。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">module</span> <span class="nn">UsersHelper</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">name_check_of_uniquness</span><span class="p">(</span><span class="n">update_name</span><span class="p">,</span> <span class="n">target_user_id</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">update_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">check_name</span><span class="o">.</span><span class="n">blank?</span> <span class="o">||</span> <span class="n">check_name</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">target_user_id</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="k">return</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>やりたいことはこんな感じです。</p>
+
+<ul>
+<li>usersのnameはユニークであってほしいが、退会を<a href="https://github.com/goncalossilva/rails3_acts_as_paranoid">acts_as_paranoid</a>で管理しているため、nameに一意制約はつけられない</li>
+<li>usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK</li>
+<li>又は、更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK。users.nameは変更せず、usersの他の項目のみ更新する場合があるため</li>
+<li>もともとはhelperに書いてあったものをmodelに移す</li>
+</ul>
+
+
+<p>まず、失敗するテストを書きます。<br/>
+(RSpecは使いませんでした)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># no method errorで失敗する</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">bundle</span> <span class="nb">exec</span> <span class="n">ruby</span> <span class="o">-</span><span class="n">I</span> <span class="nb">test</span> <span class="nb">test</span><span class="o">/</span><span class="n">unit</span><span class="o">/</span><span class="n">user_test</span><span class="o">.</span><span class="n">rb</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>次に、何も実装していないメソッドを書きます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">acts_as_paranoid</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">name_check_of_uniquness</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストを実行し、通ったら実装部分を書いていきます。まずは、下記の実装を行います。</p>
+
+<ul>
+<li>usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK</li>
+</ul>
+
+
+<p>(ついでに、冗長な記述をリファクタリングします)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">acts_as_paranoid</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">name_check_of_uniquness</span><span class="p">(</span><span class="n">update_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">update_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span><span class="o">.</span><span class="n">blank?</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここで一度テストを実行。引数エラーで失敗します。<br/>
+そして、テストを修正します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;new_user_name&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これでテストが通ります。次に、下記の実装を行います。</p>
+
+<ul>
+<li>又は、更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK。users.nameは変更せず、usersの他の項目のみ更新する場合があるため</li>
+</ul>
+
+
+<p>そしてこの実装は、users.nameの更新は無いがusersの他の項目は更新がある場合のケースのテストを行いたいため、テストケースを追加します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># users.id = 1は退会していないアクティブなユーザーのテストデータ</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;new_user_name&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;active_user_name&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ここでテストを実行。<code>active_user_name</code>はfixtureで作成しているユーザーなので、falseが返ってきて失敗します。<br/>
+実装に入ります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="ss">ActiveRecord</span><span class="p">:</span><span class="ss">:Base</span>
+</span><span class='line'>  <span class="n">acts_as_paranoid</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">name_check_of_uniquness</span><span class="p">(</span><span class="n">update_name</span><span class="p">,</span> <span class="n">target_user_id</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find_by_name</span><span class="p">(</span><span class="n">update_name</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">check_name</span><span class="o">.</span><span class="n">blank?</span> <span class="o">||</span> <span class="n">check_name</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">target_user_id</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストが通りました。さらに、falseを返すパターンもテストケースに追加したいため下記テストを追加します。</p>
+
+<ul>
+<li>ユーザー名は一致しているが、パラメータで渡されたtarget_user_idが一致していなかったらエラーを返す</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># coding: utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;test_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">UserTest</span> <span class="o">&lt;</span> <span class="ss">ActiveSupport</span><span class="p">:</span><span class="ss">:TestCase</span>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;new_user_name&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">test</span> <span class="s2">&quot;#更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK&quot;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;active_user_name&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nb">test</span> <span class="s1">&#39;#ユーザー名は一致しているが、パラメータで渡されたユーザーIDと一致していないとエラー&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">assert</span> <span class="o">!</span><span class="no">User</span><span class="o">.</span><span class="n">name_check_of_uniquness</span><span class="p">(</span><span class="s1">&#39;active_user_name&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>こんな感じでユニットテストを書きました。<br/>
+コードへの突っ込みはあると思いますが、ユニットテストを考えるプロセスと書くプロセスについては理解を深めることができました。</p>
+
+<p>ちょっと長くなったので、TDDお手本は次回に回します。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[【何番煎じ】OctopressとGitHub Pagesを使用したブログの構築手順]]></title>
+    <link href="http://onigra.github.io/blog/2013/04/28/introduction-of-octopress/"/>
+    <updated>2013-04-28T22:05:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/04/28/introduction-of-octopress</id>
+    <content type="html"><![CDATA[<p><a href="http://ut-gym.jp/">UT Startup Gym</a>の第3期成果発表会も終わった事ですし、<br/>
+前からやろうと思ってた技術ブログを立ち上げました。</p>
+
+<p>日本のエンジニアのブログといえば<a href="http://hatenablog.com/">はてなブログ</a>が多い印象ですが、<br/>
+最近は<a href="http://octopress.org/">Octopress</a>と<a href="http://pages.github.com/">GitHub Pages</a>を使った運用がナウいらしいので<br/>
+流行に乗っかってみます。</p>
+
+<h4>参考（というか、ほぼ同じ内容）</h4>
+
+<p><a href="http://blog.glidenote.com/blog/2011/11/07/install-octopress-on-github/">GithubとOctopressでモダンな技術系ブログを作ってみる</a></p>
+
+<h2>環境</h2>
+
+<p>前提として、gitとrubyがインストールされてる必要があります。</p>
+
+<ul>
+<li>OS X Lion</li>
+<li>ruby 1.9.3p392(rbenv)</li>
+<li>git 1.8.2.1</li>
+</ul>
+
+
+<h2>導入</h2>
+
+<p>Octopressのリポジトリをクローン</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd ~
+</span><span class='line'>git clone git://github.com/imathis/octopress.git octopress
+</span><span class='line'>cd octopress</span></code></pre></td></tr></table></div></figure>
+
+
+<p>bundle install</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle install --path vendor/bundle
+</span><span class='line'>rbenv: version `1.9.3-p194' is not installed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>うん？rubyのバージョンがこれじゃないとインストールできないの？<br/>
+いやいやそんなことはないでしょう。と思い、ファイル一覧を見てみると<br/>
+<code>.rbenv-version</code>というファイルがあることに気付きました。</p>
+
+<p>中を見ると、1.9.3-p194とだけ書いてあります。<br/>
+これを1.9.3-p392に修正すると動くかな？</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle install --path vendor/bundle
+</span><span class='line'>Fetching gem metadata from http://rubygems.org/.......</span></code></pre></td></tr></table></div></figure>
+
+
+<p>お、いった。大した問題じゃなくてよかった。<br/>
+gemがインストールできたら、テーマをインストールします。<br/>
+インストールすると、プレビューできるようになります。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle exec rake install
+</span><span class='line'>bundle exec rake preview</span></code></pre></td></tr></table></div></figure>
+
+
+<p>でもデフォルトは嫌なので<a href="https://github.com/imathis/octopress/wiki/3rd-Party-Octopress-Themes">サードパーティー制のテーマを導入します。</a><br/>
+今回は、<a href="https://github.com/lucaslew/whitespace">Whitespace</a>というのを導入しました。<br/>
+インストールの際に、既にインストールしたファイルを上書くか聞かれるのでyを入力します。</p>
+
+<p>zshを使ってて<code>zsh: no matches found</code>が出てしまう方は[をエスケープするか<br/>
+.zshrcに<code>setopt nonomatch</code>を記述しておきましょう。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone git://github.com/lucaslew/whitespace.git .themes/whitespace
+</span><span class='line'>bundle exec rake install['whitespace']
+</span><span class='line'>A theme is already installed, proceeding will overwrite existing files. Are you sure? [y/n]
+</span><span class='line'>
+</span><span class='line'>bundle exec rake preview</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ブログタイトルなどは_config.ymlの中で設定できます。<br/>
+titleやauthor等を編集すると、ヘッダーやフッターが自動的に変わってくれます。<br/>
+SNSのURLも設定できるようですが、Whitespaceはデフォルトだと何も出ません。<br/>
+他のテーマだとリンクがアイコンで表示されたりするんでしょうね。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="c1"># ----------------------- #</span>
+</span><span class='line'><span class="c1">#      Main Configs       #</span>
+</span><span class='line'><span class="c1"># ----------------------- #</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://yoursite.com</span>
+</span><span class='line'><span class="l-Scalar-Plain">title</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">My Octopress Blog</span>
+</span><span class='line'><span class="l-Scalar-Plain">subtitle</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">A blogging framework for hackers.</span>
+</span><span class='line'><span class="l-Scalar-Plain">author</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Your Name</span>
+</span><span class='line'><span class="l-Scalar-Plain">simple_search</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://google.com/search</span>
+</span><span class='line'><span class="l-Scalar-Plain">description</span><span class="p-Indicator">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="nn">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>GitHub Pagesの設定</h2>
+
+<p>Githubにusername.github.comというリポジトリを作成します。
+例えば僕の場合、<a href="https://github.com/onigra">onigraというusername</a>なので<a href="https://github.com/onigra/onigra.github.com">onigra.github.com</a>となります。</p>
+
+<h2>デプロイ</h2>
+
+<p>OctopressをGithub Pagesにデプロイするための設定をします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">bundle exec rake setup_github_pages</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コマンドを叩くと、Github PagesのリポジトリのURLを入力しろと出ますので、<br/>
+先程作ったリポジトリのURLを入力しましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">Enter the read/write url for your repository</span><span class="p-Indicator">:</span>
+</span><span class='line'><span class="l-Scalar-Plain">git@github.com:onigra/onigra.github.com.git</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>入力したら、下記コマンドを入力するとデプロイできます。<br/>
+しばらくすると、<a href="http://onigra.github.io/">http://onigra.github.io/</a>にブログができあがります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">bundle exec rake generate</span>
+</span><span class='line'><span class="l-Scalar-Plain">bundle exec rake deploy</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>自己紹介の追加</h2>
+
+<p>自己紹介ページが無い事に気付いたので、追加してみます。<br/>
+rakeタスクを確認すると、new_pageというタスクがあるのでこれを使います。</p>
+
+<p>自己紹介のページは、aboutという名前にします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">bundle exec rake new_page[&#39;about&#39;]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、<code>source/about/index.markdown</code>というディレクトリができるので<br/>
+これを編集します。編集したら、ナビゲーションにリンクを追記します。<br/>
+Whitespaceの場合は、 <code>source/_includes/custom/navigation.html</code>を編集すればOKでした。</p>
+
+<h2>感想</h2>
+
+<p>簡単でした。rubyで何か作ったことある人でしたら1時間もあれば立てれるでしょう。markdownで書けるのも楽で良いです。 <br/>
+よくわからない管理ツール使わずに、コマンドラインで全部完結するのもいいですね。エンジニアっぽくて。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[first post]]></title>
+    <link href="http://onigra.github.io/blog/2013/04/28/first-post/"/>
+    <updated>2013-04-28T20:39:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/04/28/first-post</id>
+    <content type="html"><![CDATA[<p>this is it</p>
+]]></content>
+  </entry>
+  
+</feed>

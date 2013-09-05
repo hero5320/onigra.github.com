@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="ja"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>【何番煎じ】OctopressとGitHub Pagesを使用したブログの構築手順 - nekogeruge</title>
+  <meta name="author" content="nekogeruge">
+
+  
+  <meta name="description" content="UT Startup Gymの第3期成果発表会も終わった事ですし、
+前からやろうと思ってた技術ブログを立ち上げました。 日本のエンジニアのブログといえばはてなブログが多い印象ですが、
+最近はOctopressとGitHub Pagesを使った運用がナウいらしいので
+流行に乗っかってみます。 参考（ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://onigra.github.io/blog/2013/04/28/introduction-of-octopress">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="nekogeruge" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">nekogeruge</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:onigra.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">【何番煎じ】OctopressとGitHub Pagesを使用したブログの構築手順</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-28T22:05:00+09:00" pubdate data-updated="true">Apr 28<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><a href="http://ut-gym.jp/">UT Startup Gym</a>の第3期成果発表会も終わった事ですし、<br/>
+前からやろうと思ってた技術ブログを立ち上げました。</p>
+
+<p>日本のエンジニアのブログといえば<a href="http://hatenablog.com/">はてなブログ</a>が多い印象ですが、<br/>
+最近は<a href="http://octopress.org/">Octopress</a>と<a href="http://pages.github.com/">GitHub Pages</a>を使った運用がナウいらしいので<br/>
+流行に乗っかってみます。</p>
+
+<h4>参考（というか、ほぼ同じ内容）</h4>
+
+<p><a href="http://blog.glidenote.com/blog/2011/11/07/install-octopress-on-github/">GithubとOctopressでモダンな技術系ブログを作ってみる</a></p>
+
+<h2>環境</h2>
+
+<p>前提として、gitとrubyがインストールされてる必要があります。</p>
+
+<ul>
+<li>OS X Lion</li>
+<li>ruby 1.9.3p392(rbenv)</li>
+<li>git 1.8.2.1</li>
+</ul>
+
+
+<h2>導入</h2>
+
+<p>Octopressのリポジトリをクローン</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd ~
+</span><span class='line'>git clone git://github.com/imathis/octopress.git octopress
+</span><span class='line'>cd octopress</span></code></pre></td></tr></table></div></figure>
+
+
+<p>bundle install</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle install --path vendor/bundle
+</span><span class='line'>rbenv: version `1.9.3-p194' is not installed</span></code></pre></td></tr></table></div></figure>
+
+
+<p>うん？rubyのバージョンがこれじゃないとインストールできないの？<br/>
+いやいやそんなことはないでしょう。と思い、ファイル一覧を見てみると<br/>
+<code>.rbenv-version</code>というファイルがあることに気付きました。</p>
+
+<p>中を見ると、1.9.3-p194とだけ書いてあります。<br/>
+これを1.9.3-p392に修正すると動くかな？</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle install --path vendor/bundle
+</span><span class='line'>Fetching gem metadata from http://rubygems.org/.......</span></code></pre></td></tr></table></div></figure>
+
+
+<p>お、いった。大した問題じゃなくてよかった。<br/>
+gemがインストールできたら、テーマをインストールします。<br/>
+インストールすると、プレビューできるようになります。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>bundle exec rake install
+</span><span class='line'>bundle exec rake preview</span></code></pre></td></tr></table></div></figure>
+
+
+<p>でもデフォルトは嫌なので<a href="https://github.com/imathis/octopress/wiki/3rd-Party-Octopress-Themes">サードパーティー制のテーマを導入します。</a><br/>
+今回は、<a href="https://github.com/lucaslew/whitespace">Whitespace</a>というのを導入しました。<br/>
+インストールの際に、既にインストールしたファイルを上書くか聞かれるのでyを入力します。</p>
+
+<p>zshを使ってて<code>zsh: no matches found</code>が出てしまう方は[をエスケープするか<br/>
+.zshrcに<code>setopt nonomatch</code>を記述しておきましょう。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone git://github.com/lucaslew/whitespace.git .themes/whitespace
+</span><span class='line'>bundle exec rake install['whitespace']
+</span><span class='line'>A theme is already installed, proceeding will overwrite existing files. Are you sure? [y/n]
+</span><span class='line'>
+</span><span class='line'>bundle exec rake preview</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ブログタイトルなどは_config.ymlの中で設定できます。<br/>
+titleやauthor等を編集すると、ヘッダーやフッターが自動的に変わってくれます。<br/>
+SNSのURLも設定できるようですが、Whitespaceはデフォルトだと何も出ません。<br/>
+他のテーマだとリンクがアイコンで表示されたりするんでしょうね。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="c1"># ----------------------- #</span>
+</span><span class='line'><span class="c1">#      Main Configs       #</span>
+</span><span class='line'><span class="c1"># ----------------------- #</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">url</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://yoursite.com</span>
+</span><span class='line'><span class="l-Scalar-Plain">title</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">My Octopress Blog</span>
+</span><span class='line'><span class="l-Scalar-Plain">subtitle</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">A blogging framework for hackers.</span>
+</span><span class='line'><span class="l-Scalar-Plain">author</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Your Name</span>
+</span><span class='line'><span class="l-Scalar-Plain">simple_search</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http://google.com/search</span>
+</span><span class='line'><span class="l-Scalar-Plain">description</span><span class="p-Indicator">:</span>
+</span><span class='line'>
+</span><span class='line'><span class="nn">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>GitHub Pagesの設定</h2>
+
+<p>Githubにusername.github.comというリポジトリを作成します。
+例えば僕の場合、<a href="https://github.com/onigra">onigraというusername</a>なので<a href="https://github.com/onigra/onigra.github.com">onigra.github.com</a>となります。</p>
+
+<h2>デプロイ</h2>
+
+<p>OctopressをGithub Pagesにデプロイするための設定をします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">bundle exec rake setup_github_pages</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コマンドを叩くと、Github PagesのリポジトリのURLを入力しろと出ますので、<br/>
+先程作ったリポジトリのURLを入力しましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">Enter the read/write url for your repository</span><span class="p-Indicator">:</span>
+</span><span class='line'><span class="l-Scalar-Plain">git@github.com:onigra/onigra.github.com.git</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>入力したら、下記コマンドを入力するとデプロイできます。<br/>
+しばらくすると、<a href="http://onigra.github.io/">http://onigra.github.io/</a>にブログができあがります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">bundle exec rake generate</span>
+</span><span class='line'><span class="l-Scalar-Plain">bundle exec rake deploy</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>自己紹介の追加</h2>
+
+<p>自己紹介ページが無い事に気付いたので、追加してみます。<br/>
+rakeタスクを確認すると、new_pageというタスクがあるのでこれを使います。</p>
+
+<p>自己紹介のページは、aboutという名前にします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">bundle exec rake new_page[&#39;about&#39;]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>すると、<code>source/about/index.markdown</code>というディレクトリができるので<br/>
+これを編集します。編集したら、ナビゲーションにリンクを追記します。<br/>
+Whitespaceの場合は、 <code>source/_includes/custom/navigation.html</code>を編集すればOKでした。</p>
+
+<h2>感想</h2>
+
+<p>簡単でした。rubyで何か作ったことある人でしたら1時間もあれば立てれるでしょう。markdownで書けるのも楽で良いです。 <br/>
+よくわからない管理ツール使わずに、コマンドラインで全部完結するのもいいですね。エンジニアっぽくて。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">nekogeruge</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-28T22:05:00+09:00" pubdate data-updated="true">Apr 28<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/octopress/'>octopress</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://onigra.github.io/blog/2013/04/28/introduction-of-octopress/" data-via="nekogeruge_987" data-counturl="http://onigra.github.io/blog/2013/04/28/introduction-of-octopress/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/04/28/first-post/" title="Previous Post: first post">&laquo; first post</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/05/01/kojin-tddbc/" title="Next Post: 個人TDDBCを開いてもらった その1">個人TDDBCを開いてもらった その1 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/06/29/komono-engineer-no-kai/">小物エンジニアの会にてMariaDBの話をしてきました #MariaDB #小物エンジニアの会</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/13/mysql-cleanup-and-upgrade/">MacのMySQLがなんかおかしかったので環境整理するついでに5.6にした</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/06/kojin-tddbc-2/">個人TDDBCを開いてもらった その2</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/01/kojin-tddbc/">個人TDDBCを開いてもらった その1</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/28/introduction-of-octopress/">【何番煎じ】OctopressとGitHub Pagesを使用したブログの構築手順</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/onigra">@onigra</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'onigra',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekogeruge -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

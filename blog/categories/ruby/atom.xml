@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby | nekogeruge]]></title>
+  <link href="http://onigra.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://onigra.github.io/"/>
+  <updated>2013-06-29T02:34:57+09:00</updated>
+  <id>http://onigra.github.io/</id>
+  <author>
+    <name><![CDATA[nekogeruge]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[個人TDDBCを開いてもらった その2]]></title>
+    <link href="http://onigra.github.io/blog/2013/05/06/kojin-tddbc-2/"/>
+    <updated>2013-05-06T15:54:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/05/06/kojin-tddbc-2</id>
+    <content type="html"><![CDATA[<p><a href="http://onigra.github.io/blog/2013/05/01/kojin-tddbc/">前回</a>の続きです。</p>
+
+<h2>TDDはテンポが重要</h2>
+
+<p>sunaotさん曰くTDDはテンポが重要で、これらの一連の流れがサクサクいくようになってくるとコーディングが楽しいとのこと。なので、bundle execでテンポが悪くなるのが好きじゃないらしいです。</p>
+
+<h2>sunaotさんによるTDDお手本</h2>
+
+<p>うまくノリを伝えられるか自信が無いですが、僕の中で非常に分かりやすかったので書き出してみます。渡した数を2倍にして返すという単純なメソッドを例にして説明してくださいました。</p>
+
+<p>まずは、テストコードを書きます。</p>
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<p>```ruby
+require 'test/unit'</p>
+
+<p>class TC_Foo &lt; Test::Unit::TestCase
+end
+```</p>
+
+<p>テストを実行します。</p>
+
+<p>```
+Run options:</p>
+
+<h1>Running tests:</h1>
+
+<p>Finished tests in 0.000401s, 0.0000 tests/s, 0.0000 assertions/s.</p>
+
+<p>0 tests, 0 assertions, 0 failures, 0 errors, 0 skips</p>
+
+<p>```</p>
+
+<p>実装コードを書きます。まだ中身は空っぽです。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<p><code>ruby
+class Foo
+end
+</code></p>
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<p>```ruby
+require 'test/unit'
+require './foo'</p>
+
+<p>class TC_Foo &lt; Test::Unit::TestCase
+end
+```</p>
+
+<p>テストを実行します。</p>
+
+<p>```
+Run options:</p>
+
+<h1>Running tests:</h1>
+
+<p>Finished tests in 0.000363s, 0.0000 tests/s, 0.0000 assertions/s.</p>
+
+<p>0 tests, 0 assertions, 0 failures, 0 errors, 0 skips</p>
+
+<p>```</p>
+
+<p>テストを書いていきます。12を渡してdoubleというメソッドを呼ぶと24が返ってくるというテストです。</p>
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<p>```ruby
+require 'test/unit'
+require './foo'</p>
+
+<p>class TC_Foo &lt; Test::Unit::TestCase
+  def setup</p>
+
+<pre><code>@foo = Foo.new(12)
+</code></pre>
+
+<p>  end</p>
+
+<p>  def test_double</p>
+
+<pre><code>assert_equal(24, @foo.double)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>テストを実行します。</p>
+
+<p>```
+Run options:</p>
+
+<h1>Running tests:</h1>
+
+<p>E</p>
+
+<p>Finished tests in 0.000519s, 1926.7823 tests/s, 0.0000 assertions/s.</p>
+
+<p>  1) Error:
+test_double(TC_Foo):
+ArgumentError: wrong number of arguments(1 for 0)</p>
+
+<pre><code>/Users/nekogeruge/tdd/foo_test.rb:6:in `initialize'
+/Users/nekogeruge/tdd/foo_test.rb:6:in `new'
+/Users/nekogeruge/tdd/foo_test.rb:6:in `setup'
+</code></pre>
+
+<p>1 tests, 0 assertions, 0 failures, 1 errors, 0 skips</p>
+
+<p>```</p>
+
+<p>引数が不正だと怒られました。コンストラクタを作成します。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<p>```ruby
+class Foo
+  def initialize(int)</p>
+
+<pre><code>@int = int
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>テストを実行します。</p>
+
+<p>```
+Run options:</p>
+
+<h1>Running tests:</h1>
+
+<p>E</p>
+
+<p>Finished tests in 0.000515s, 1941.7476 tests/s, 0.0000 assertions/s.</p>
+
+<p>  1) Error:
+test_double(TC_Foo):
+NoMethodError: undefined method `double' for #&lt;Foo:0x007fc983890fe0 @int=12></p>
+
+<pre><code>/Users/nekogeruge/tdd/foo_test.rb:10:in `test_double'
+</code></pre>
+
+<p>1 tests, 0 assertions, 0 failures, 1 errors, 0 skips</p>
+
+<p>```</p>
+
+<p>doubleというメソッドが無いよと怒られました。はい、作ります。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<p>```ruby
+class Foo
+  def initialize(int)</p>
+
+<pre><code>@int = int
+</code></pre>
+
+<p>  end</p>
+
+<p>  def double
+  end
+end
+```</p>
+
+<p>テストを実行します。</p>
+
+<p>```
+Run options:</p>
+
+<h1>Running tests:</h1>
+
+<p>F</p>
+
+<p>Finished tests in 0.000665s, 1503.7594 tests/s, 1503.7594 assertions/s.</p>
+
+<p>  1) Failure:
+test_double(TC_Foo) [/Users/nekogeruge/tdd/foo_test.rb:10]:
+<24> expected but was
+<nil>.</p>
+
+<p>1 tests, 1 assertions, 1 failures, 0 errors, 0 skips</p>
+
+<p>```</p>
+
+<p>doubleの返してくるものがnilなので怒られました。このテストを通す為の一番簡単な実装をしてみます。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<p>```ruby
+class Foo
+  def initialize(int)</p>
+
+<pre><code>@int = int
+</code></pre>
+
+<p>  end</p>
+
+<p>  def double</p>
+
+<pre><code>24
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>テストを実行します。</p>
+
+<p>```
+Run options:</p>
+
+<h1>Running tests:</h1>
+
+<p>.</p>
+
+<p>Finished tests in 0.000464s, 2155.1724 tests/s, 2155.1724 assertions/s.</p>
+
+<p>1 tests, 1 assertions, 0 failures, 0 errors, 0 skips</p>
+
+<p>```</p>
+
+<p>通りました。次に、別のデータを使ったパターンのテストを書きます。</p>
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<p>```ruby
+require 'test/unit'
+require './foo'</p>
+
+<p>class TC_Foo &lt; Test::Unit::TestCase
+  def setup</p>
+
+<pre><code>@foo = Foo.new(12)
+@moo = Foo.new(15)
+</code></pre>
+
+<p>  end</p>
+
+<p>  def test_double</p>
+
+<pre><code>assert_equal(24, @foo.double)
+</code></pre>
+
+<p>  end</p>
+
+<p>  def test_another</p>
+
+<pre><code>assert_equal(30, @moo.double)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>テストを実行します。</p>
+
+<p>```
+Run options:</p>
+
+<h1>Running tests:</h1>
+
+<p>F.</p>
+
+<p>Finished tests in 0.000714s, 2801.1204 tests/s, 2801.1204 assertions/s.</p>
+
+<p>  1) Failure:
+test_another(TC_Foo) [/Users/nekogeruge/tdd/foo_test.rb:15]:
+<30> expected but was
+<24>.</p>
+
+<p>2 tests, 2 assertions, 1 failures, 0 errors, 0 skips</p>
+
+<p>```</p>
+
+<p>当然コケます。なので、本格的な実装に入ります。</p>
+
+<ul>
+<li>foo.rb</li>
+</ul>
+
+
+<p>```ruby
+class Foo
+  def initialize(int)</p>
+
+<pre><code>@int = int
+</code></pre>
+
+<p>  end</p>
+
+<p>  def double</p>
+
+<pre><code>@int * 2
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>テストを実行します。</p>
+
+<p>```
+Run options:</p>
+
+<h1>Running tests:</h1>
+
+<p>..</p>
+
+<p>Finished tests in 0.000537s, 3724.3948 tests/s, 3724.3948 assertions/s.</p>
+
+<p>2 tests, 2 assertions, 0 failures, 0 errors, 0 skips</p>
+
+<p>```</p>
+
+<p>通りました。2つ目のテストは考えを整理する為に書いたもので不要なので消します。残したければ残しておいても問題ありません。</p>
+
+<ul>
+<li>foo_test.rb</li>
+</ul>
+
+
+<p>```ruby
+require 'test/unit'
+require './foo'</p>
+
+<p>class TC_Foo &lt; Test::Unit::TestCase
+  def setup</p>
+
+<pre><code>@foo = Foo.new(12)
+</code></pre>
+
+<p>  end</p>
+
+<p>  def test_double</p>
+
+<pre><code>assert_equal(24, @foo.double)
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>念のためテストを実行します。</p>
+
+<p>```
+Run options:</p>
+
+<h1>Running tests:</h1>
+
+<p>.</p>
+
+<p>Finished tests in 0.000450s, 2222.2222 tests/s, 2222.2222 assertions/s.</p>
+
+<p>1 tests, 1 assertions, 0 failures, 0 errors, 0 skips</p>
+
+<p>```</p>
+
+<p>これで実装完了です。<br/>
+こうして書き出してみると、<a href="http://d.hatena.ne.jp/t-wada/20100228">t_wadaさんの記事</a>とプロセスは全く一緒ですね。やはりお手本を見せてもらうのは分かりやすかったです。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[個人TDDBCを開いてもらった その1]]></title>
+    <link href="http://onigra.github.io/blog/2013/05/01/kojin-tddbc/"/>
+    <updated>2013-05-01T23:05:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/05/01/kojin-tddbc</id>
+    <content type="html"><![CDATA[<p>以前に<a href="https://twitter.com/t_wada">t_wadaさん</a>の<a href="http://d.hatena.ne.jp/t-wada/20100228">RSpec入門記事</a>を写経し、なんとなくユニットテストの書き方とTDDのプロセスは理解したものの、より深くテストについて理解したかったため<a href="https://twitter.com/sunaot">sunaotさん</a>に個人TDDBCをやってもらいました。</p>
+
+<p>ネタはこんな感じです。</p>
+
+<ul>
+<li>自分が作ってるrailsアプリを元にテストコードを書いてみつつリファクタリング</li>
+<li>sunaotさんによるTDDお手本</li>
+</ul>
+
+
+<h2>自分が作ってるアプリのテストを書いてみる</h2>
+
+<p>今回やってみたのは、下記のメソッドです。<br/>
+リファクタリング前のコードを載せるのはかなり抵抗ありますね。</p>
+
+<p>```ruby
+module UsersHelper
+  def name_check_of_uniquness(update_name, target_user_id)</p>
+
+<pre><code>check_name = User.find_by_name(update_name)
+if check_name.blank? || check_name.id == target_user_id
+  return true
+else
+  return false
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>やりたいことはこんな感じです。</p>
+
+<ul>
+<li>usersのnameはユニークであってほしいが、退会を<a href="https://github.com/goncalossilva/rails3_acts_as_paranoid">acts_as_paranoid</a>で管理しているため、nameに一意制約はつけられない</li>
+<li>usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK</li>
+<li>又は、更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK。users.nameは変更せず、usersの他の項目のみ更新する場合があるため</li>
+<li>もともとはhelperに書いてあったものをmodelに移す</li>
+</ul>
+
+
+<p>まず、失敗するテストを書きます。<br/>
+(RSpecは使いませんでした)</p>
+
+<p>```ruby</p>
+
+<h1>coding: utf-8</h1>
+
+<p>require 'test_helper'</p>
+
+<h1>no method errorで失敗する</h1>
+
+<p>class UserTest &lt; ActiveSupport::TestCase
+  test "#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK" do</p>
+
+<pre><code>assert User.name_check_of_uniquness
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>テストを実行します。</p>
+
+<p><code>
+bundle exec ruby -I test test/unit/user_test.rb
+</code></p>
+
+<p>次に、何も実装していないメソッドを書きます。</p>
+
+<p>```ruby
+class User &lt; ActiveRecord::Base
+  acts_as_paranoid</p>
+
+<p>  def self.name_check_of_uniquness
+  end
+end
+```</p>
+
+<p>テストを実行し、通ったら実装部分を書いていきます。まずは、下記の実装を行います。</p>
+
+<ul>
+<li>usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK</li>
+</ul>
+
+
+<p>(ついでに、冗長な記述をリファクタリングします)</p>
+
+<p>```ruby
+class User &lt; ActiveRecord::Base
+  acts_as_paranoid</p>
+
+<p>  def self.name_check_of_uniquness(update_name)</p>
+
+<pre><code>check_name = User.find_by_name(update_name)
+check_name.blank?
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>ここで一度テストを実行。引数エラーで失敗します。<br/>
+そして、テストを修正します。</p>
+
+<p>```ruby</p>
+
+<h1>coding: utf-8</h1>
+
+<p>require 'test_helper'</p>
+
+<p>class UserTest &lt; ActiveSupport::TestCase
+  test "#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK" do</p>
+
+<pre><code>assert User.name_check_of_uniquness('new_user_name')
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>これでテストが通ります。次に、下記の実装を行います。</p>
+
+<ul>
+<li>又は、更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK。users.nameは変更せず、usersの他の項目のみ更新する場合があるため</li>
+</ul>
+
+
+<p>そしてこの実装は、users.nameの更新は無いがusersの他の項目は更新がある場合のケースのテストを行いたいため、テストケースを追加します。</p>
+
+<p>```ruby</p>
+
+<h1>coding: utf-8</h1>
+
+<p>require 'test_helper'</p>
+
+<h1>users.id = 1は退会していないアクティブなユーザーのテストデータ</h1>
+
+<p>class UserTest &lt; ActiveSupport::TestCase
+  test "#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK" do</p>
+
+<pre><code>assert User.name_check_of_uniquness('new_user_name') 
+</code></pre>
+
+<p>  end</p>
+
+<p>  test "#更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK" do</p>
+
+<pre><code>assert User.name_check_of_uniquness('active_user_name') 
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>ここでテストを実行。<code>active_user_name</code>はfixtureで作成しているユーザーなので、falseが返ってきて失敗します。<br/>
+実装に入ります。</p>
+
+<p>```ruby
+class User &lt; ActiveRecord::Base
+  acts_as_paranoid</p>
+
+<p>  def self.name_check_of_uniquness(update_name, target_user_id)</p>
+
+<pre><code>check_name = User.find_by_name(update_name)
+check_name.blank? || check_name.id == target_user_id
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>テストが通りました。さらに、falseを返すパターンもテストケースに追加したいため下記テストを追加します。</p>
+
+<ul>
+<li>ユーザー名は一致しているが、パラメータで渡されたtarget_user_idが一致していなかったらエラーを返す</li>
+</ul>
+
+
+<p>```ruby</p>
+
+<h1>coding: utf-8</h1>
+
+<p>require 'test_helper'</p>
+
+<p>class UserTest &lt; ActiveSupport::TestCase
+  test "#usersを更新する際、更新しようとしているusers.nameが退会していない全ユーザーとかぶらなければ更新OK" do</p>
+
+<pre><code>assert User.name_check_of_uniquness('new_user_name', 1) 
+</code></pre>
+
+<p>  end</p>
+
+<p>  test "#更新しようとしているusers.nameがtarget_user_idと一致していれば更新OK" do</p>
+
+<pre><code>assert User.name_check_of_uniquness('active_user_name', 1) 
+</code></pre>
+
+<p>  end</p>
+
+<p>  test '#ユーザー名は一致しているが、パラメータで渡されたユーザーIDと一致していないとエラー' do</p>
+
+<pre><code>assert !User.name_check_of_uniquness('active_user_name', 3) 
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>こんな感じでユニットテストを書きました。<br/>
+コードへの突っ込みはあると思いますが、ユニットテストを考えるプロセスと書くプロセスについては理解を深めることができました。</p>
+
+<p>ちょっと長くなったので、TDDお手本は次回に回します。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[【何番煎じ】OctopressとGitHub Pagesを使用したブログの構築手順]]></title>
+    <link href="http://onigra.github.io/blog/2013/04/28/introduction-of-octopress/"/>
+    <updated>2013-04-28T22:05:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/04/28/introduction-of-octopress</id>
+    <content type="html"><![CDATA[<p><a href="http://ut-gym.jp/">UT Startup Gym</a>の第3期成果発表会も終わった事ですし、<br/>
+前からやろうと思ってた技術ブログを立ち上げました。</p>
+
+<p>日本のエンジニアのブログといえば<a href="http://hatenablog.com/">はてなブログ</a>が多い印象ですが、<br/>
+最近は<a href="http://octopress.org/">Octopress</a>と<a href="http://pages.github.com/">GitHub Pages</a>を使った運用がナウいらしいので<br/>
+流行に乗っかってみます。</p>
+
+<h4>参考（というか、ほぼ同じ内容）</h4>
+
+<p><a href="http://blog.glidenote.com/blog/2011/11/07/install-octopress-on-github/">GithubとOctopressでモダンな技術系ブログを作ってみる</a></p>
+
+<h2>環境</h2>
+
+<p>前提として、gitとrubyがインストールされてる必要があります。</p>
+
+<ul>
+<li>OS X Lion</li>
+<li>ruby 1.9.3p392(rbenv)</li>
+<li>git 1.8.2.1</li>
+</ul>
+
+
+<h2>導入</h2>
+
+<p>Octopressのリポジトリをクローン</p>
+
+<p><code>
+cd ~
+git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+</code></p>
+
+<p>bundle install</p>
+
+<p><code>
+bundle install --path vendor/bundle
+rbenv: version `1.9.3-p194' is not installed
+</code></p>
+
+<p>うん？rubyのバージョンがこれじゃないとインストールできないの？<br/>
+いやいやそんなことはないでしょう。と思い、ファイル一覧を見てみると<br/>
+<code>.rbenv-version</code>というファイルがあることに気付きました。</p>
+
+<p>中を見ると、1.9.3-p194とだけ書いてあります。<br/>
+これを1.9.3-p392に修正すると動くかな？</p>
+
+<p><code>
+bundle install --path vendor/bundle
+Fetching gem metadata from http://rubygems.org/.......
+</code></p>
+
+<p>お、いった。大した問題じゃなくてよかった。<br/>
+gemがインストールできたら、テーマをインストールします。<br/>
+インストールすると、プレビューできるようになります。</p>
+
+<p><code>
+bundle exec rake install
+bundle exec rake preview
+</code></p>
+
+<p>でもデフォルトは嫌なので<a href="https://github.com/imathis/octopress/wiki/3rd-Party-Octopress-Themes">サードパーティー制のテーマを導入します。</a><br/>
+今回は、<a href="https://github.com/lucaslew/whitespace">Whitespace</a>というのを導入しました。<br/>
+インストールの際に、既にインストールしたファイルを上書くか聞かれるのでyを入力します。</p>
+
+<p>zshを使ってて<code>zsh: no matches found</code>が出てしまう方は[をエスケープするか<br/>
+.zshrcに<code>setopt nonomatch</code>を記述しておきましょう。</p>
+
+<p>```
+git clone git://github.com/lucaslew/whitespace.git .themes/whitespace
+bundle exec rake install['whitespace']
+A theme is already installed, proceeding will overwrite existing files. Are you sure? [y/n]</p>
+
+<p>bundle exec rake preview
+```</p>
+
+<p>ブログタイトルなどは_config.ymlの中で設定できます。<br/>
+titleやauthor等を編集すると、ヘッダーやフッターが自動的に変わってくれます。<br/>
+SNSのURLも設定できるようですが、Whitespaceはデフォルトだと何も出ません。<br/>
+他のテーマだとリンクがアイコンで表示されたりするんでしょうね。</p>
+
+<p>```yaml</p>
+
+<h1>-----------------------</h1>
+
+<h1>Main Configs</h1>
+
+<h1>-----------------------</h1>
+
+<p>url: http://yoursite.com
+title: My Octopress Blog
+subtitle: A blogging framework for hackers.
+author: Your Name
+simple_search: http://google.com/search
+description:</p>
+
+<p>...</p>
+
+<p>```</p>
+
+<h2>GitHub Pagesの設定</h2>
+
+<p>Githubにusername.github.comというリポジトリを作成します。
+例えば僕の場合、<a href="https://github.com/onigra">onigraというusername</a>なので<a href="https://github.com/onigra/onigra.github.com">onigra.github.com</a>となります。</p>
+
+<h2>デプロイ</h2>
+
+<p>OctopressをGithub Pagesにデプロイするための設定をします。</p>
+
+<p><code>
+bundle exec rake setup_github_pages
+</code></p>
+
+<p>コマンドを叩くと、Github PagesのリポジトリのURLを入力しろと出ますので、<br/>
+先程作ったリポジトリのURLを入力しましょう。</p>
+
+<p><code>
+Enter the read/write url for your repository:
+git@github.com:onigra/onigra.github.com.git
+</code></p>
+
+<p>入力したら、下記コマンドを入力するとデプロイできます。<br/>
+しばらくすると、<a href="http://onigra.github.io/">http://onigra.github.io/</a>にブログができあがります。</p>
+
+<p><code>
+bundle exec rake generate
+bundle exec rake deploy
+</code></p>
+
+<h2>自己紹介の追加</h2>
+
+<p>自己紹介ページが無い事に気付いたので、追加してみます。<br/>
+rakeタスクを確認すると、new_pageというタスクがあるのでこれを使います。</p>
+
+<p>自己紹介のページは、aboutという名前にします。</p>
+
+<p><code>
+bundle exec rake new_page['about']
+</code></p>
+
+<p>すると、<code>source/about/index.markdown</code>というディレクトリができるので<br/>
+これを編集します。編集したら、ナビゲーションにリンクを追記します。<br/>
+Whitespaceの場合は、 <code>source/_includes/custom/navigation.html</code>を編集すればOKでした。</p>
+
+<h2>感想</h2>
+
+<p>簡単でした。rubyで何か作ったことある人でしたら1時間もあれば立てれるでしょう。markdownで書けるのも楽で良いです。 <br/>
+よくわからない管理ツール使わずに、コマンドラインで全部完結するのもいいですね。エンジニアっぽくて。</p>
+]]></content>
+  </entry>
+  
+</feed>

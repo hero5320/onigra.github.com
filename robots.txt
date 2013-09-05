@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://onigra.github.io/sitemap.xml 
