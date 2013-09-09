@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="ja"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>JenkinsのアップデートしたらCloudbees Free Enterprise Plugins関連で焦った話 - nekogeruge</title>
+  <meta name="author" content="nekogeruge">
+
+  
+  <meta name="description" content="日本語の記事がほとんど見当たらなかったので書きます。 JenkinsのプラグインでCloudBees Free Enterprise Pluginsというのがあり、会社でがっつり使われてるのですが、バージョンが上がった際にcloudbeesのアカウント登録が必要になったようです。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://onigra.github.io/blog/2013/09/05/jenkins-upgrade-with-cloudbees-free-enterprise-plugin">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="nekogeruge" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+  
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">nekogeruge</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:onigra.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">JenkinsのアップデートしたらCloudbees Free Enterprise Plugins関連で焦った話</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-05T16:19:00+09:00" pubdate data-updated="true">Sep 5<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>日本語の記事がほとんど見当たらなかったので書きます。</p>
+
+<p>Jenkinsのプラグインで<a href="https://wiki.jenkins-ci.org/display/JENKINS/CloudBees+Free+Enterprise+Plugins">CloudBees Free Enterprise Plugins</a>というのがあり、会社でがっつり使われてるのですが、バージョンが上がった際に<a href="http://www.cloudbees.com/">cloudbees</a>のアカウント登録が必要になったようです。サインアップしてこのプラグインを使う事は無料なのですが、けっこう焦りました。</p>
+
+<ol>
+<li><p>こんな感じの画面が出ます
+<img src="https://wiki.jenkins-ci.org/download/attachments/60917181/Screen+shot+2012-04-16+at+22.29.44.png?version=1&amp;modificationDate=1334611834000" alt="サインアップしろよ！" /></p></li>
+<li><p>既にアカウントを作成している場合は、 <code>I already have a CloudBees account, 〜</code> にチェックしてCloudbeesサービスへのログイン情報を入力します
+<img src="https://wiki.jenkins-ci.org/download/attachments/60917181/Screen+shot+2012-04-16+at+22.30.45.png?version=1&amp;modificationDate=1334611949000" alt="ログインしろよ！" /></p></li>
+<li><p>サインアップはGithubアカウントでも行えるのでサクッとできます
+<img src="/images/cloudbees_signup.jpg" alt="サインアップ画面" /></p></li>
+<li><p>サインアップせずに先に進んでしまうと、bootstrapのアラートみたいなのが出て怒られます。当然、プラグインは使用できません
+<img src="/images/signup_shiro.jpg" alt="サインアップしろって言ってんだろ！" /></p></li>
+<li><p>アラートに出てる <code>Add CloudBees credentials!</code> を押すと Jenkinsの管理 -> 認証情報の管理 に遷移します。すると、 「認証情報の追加」の所に <code>CloudBees User Account</code> というのが追加されているので、ここからログイン情報を入力し、改めてプラグインをインストールすると使用できるようになります
+<img src="/images/cloudbees_account_irero.jpg" alt="ログイン情報入力" /></p></li>
+</ol>
+
+
+<p>ここでちょっとわからなかったのが、Githubアカウントのパスワードでは認証が通らなかったことです。パスワード再登録したので問題なかったのですが、謎です。</p>
+
+<p>これでCloudBees Free Enterprise Pluginsが使用できるようになります。4でサインアップせずに先に進んでしまうと、既にインストールしてたプラグインが使えなくなってるので、インストールしなおしましょう。</p>
+
+<p>こんな感じで事なきを得たのですが、CloudBees Free Enterprise Pluginsなどの日本語情報がほぼなかったので焦りました。Folder Pluginsとか<a href="https://wiki.jenkins-ci.org/display/JENKINS/Build+Flow+Plugin">Build Flow Plugin</a>とか凄く便利だと思うんですけど、使ってる人見ないですね。自分はもう辞めてしまった<a href="https://github.com/shiraji">Jenkins大好きおじさん</a>からこの辺のプラグインを教わりました。</p>
+
+<p>しかし、Build Flow Pluginは「読めないデータ」が大量に出るのが気になります。。。普通にジョブは動いてるので問題は無さそうなんですが。。。この辺の情報ってどっかまとまってないのかな？</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">nekogeruge</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-05T16:19:00+09:00" pubdate data-updated="true">Sep 5<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/jenkins/'>Jenkins</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://onigra.github.io/blog/2013/09/05/jenkins-upgrade-with-cloudbees-free-enterprise-plugin/" data-via="nekogeruge_987" data-counturl="http://onigra.github.io/blog/2013/09/05/jenkins-upgrade-with-cloudbees-free-enterprise-plugin/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/29/komono-engineer-no-kai/" title="Previous Post: 小物エンジニアの会にてMariaDBの話をしてきました #MariaDB #小物エンジニアの会">&laquo; 小物エンジニアの会にてMariaDBの話をしてきました #MariaDB #小物エンジニアの会</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/09/09/jenkins-downgrade-with-publish-over-ssh-plugin/" title="Next Post: JenkinsのPublish Over SSH Plugin関連でバージョン下げた話">JenkinsのPublish Over SSH Plugin関連でバージョン下げた話 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/09/09/jenkins-downgrade-with-publish-over-ssh-plugin/">JenkinsのPublish Over SSH Plugin関連でバージョン下げた話</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/09/05/jenkins-upgrade-with-cloudbees-free-enterprise-plugin/">JenkinsのアップデートしたらCloudbees Free Enterprise Plugins関連で焦った話</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/29/komono-engineer-no-kai/">小物エンジニアの会にてMariaDBの話をしてきました #MariaDB #小物エンジニアの会</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/13/mysql-cleanup-and-upgrade/">MacのMySQLがなんかおかしかったので環境整理するついでに5.6にした</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/06/kojin-tddbc-2/">個人TDDBCを開いてもらった その2</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/onigra">@onigra</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'onigra',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - nekogeruge -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
