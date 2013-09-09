@@ -159,6 +159,35 @@
 </span><span class='line'>$ brew install jenkins</span></code></pre></td></tr></table></div></figure>
 
 
+<ul>
+<li>会社のがyumで入れてたのでついでにyumの場合</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ yum list installed | grep jenkins
+</span><span class='line'>
+</span><span class='line'>jenkins.noarch       1.529-1.1          @jenkins
+</span><span class='line'>
+</span><span class='line'>$ yum downgrade jenkins-1.527
+</span><span class='line'>
+</span><span class='line'>…
+</span><span class='line'>
+</span><span class='line'>$ yum list installed | grep jenkins
+</span><span class='line'>
+</span><span class='line'>jenkins.noarch       1.527-1.1          @jenkins</span></code></pre></td></tr></table></div></figure>
+
+
 
 </div>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Jenkins | nekogeruge]]></title>
   <link href="http://onigra.github.io/blog/categories/jenkins/atom.xml" rel="self"/>
   <link href="http://onigra.github.io/"/>
-  <updated>2013-09-09T18:52:59+09:00</updated>
+  <updated>2013-09-09T19:14:21+09:00</updated>
   <id>http://onigra.github.io/</id>
   <author>
     <name><![CDATA[nekogeruge]]></name>
@@ -62,6 +62,25 @@ http://jenkins-ci.org
   From: https://github.com/mxcl/homebrew/commits/master/Library/Formula/jenkins.rb</p>
 
 <p>$ brew install jenkins
+```</p>
+
+<ul>
+<li>会社のがyumで入れてたのでついでにyumの場合</li>
+</ul>
+
+
+<p>```
+$ yum list installed | grep jenkins</p>
+
+<p>jenkins.noarch       1.529-1.1          @jenkins</p>
+
+<p>$ yum downgrade jenkins-1.527</p>
+
+<p>…</p>
+
+<p>$ yum list installed | grep jenkins</p>
+
+<p>jenkins.noarch       1.527-1.1          @jenkins
 ```</p>
 ]]></content>
   </entry>
