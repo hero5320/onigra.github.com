@@ -31,16 +31,22 @@
         <lastmod>2013-09-05T18:22:16+09:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://onigra.github.io/blog/2013/09/09/jenkins-downgrade-with-publish-over-ssh-plugin/
+        </loc>
+        <lastmod>2013-09-09T18:51:42+09:00</lastmod>
+    </url>
+    <url>
         <loc>http://onigra.github.io/about/</loc>
         <lastmod>2013-05-02T10:33:09+09:00</lastmod>
     </url>
     <url>
         <loc>http://onigra.github.io/blog/archives/</loc>
-        <lastmod>2013-09-05T18:22:16+09:00</lastmod>
+        <lastmod>2013-09-09T18:51:42+09:00</lastmod>
     </url>
     <url>
         <loc>http://onigra.github.io/</loc>
-        <lastmod>2013-09-05T18:22:16+09:00</lastmod>
+        <lastmod>2013-09-09T18:51:42+09:00</lastmod>
     </url>
     <url>
         <loc>http://onigra.github.io/robots.txt</loc>

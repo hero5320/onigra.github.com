@@ -4,7 +4,7 @@
   <title><![CDATA[nekogeruge]]></title>
   <link href="http://onigra.github.io/atom.xml" rel="self"/>
   <link href="http://onigra.github.io/"/>
-  <updated>2013-09-05T18:25:17+09:00</updated>
+  <updated>2013-09-09T18:52:59+09:00</updated>
   <id>http://onigra.github.io/</id>
   <author>
     <name><![CDATA[nekogeruge]]></name>
@@ -12,6 +12,80 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[JenkinsのPublish Over SSH Plugin関連でバージョン下げた話]]></title>
+    <link href="http://onigra.github.io/blog/2013/09/09/jenkins-downgrade-with-publish-over-ssh-plugin/"/>
+    <updated>2013-09-09T17:36:00+09:00</updated>
+    <id>http://onigra.github.io/blog/2013/09/09/jenkins-downgrade-with-publish-over-ssh-plugin</id>
+    <content type="html"><![CDATA[<p>前回Jenkinsのバージョン上げたんですが、ジョブの設定見たら「ロード中…」が消えず、ジョブのメンテができなくなってしまいました…</p>
+
+<p><img src="http://onigra.github.io/images/jenkins_loading.jpg" alt="ロード中" /></p>
+
+<p>調べてみると、<a href="https://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin">Publish Over SSH Plugin</a>でエラーが発生しているっぽいです。<br/>
+（正確には、プラグインの中で使ってる<a href="https://github.com/jenkinsci/publish-over-plugin">publish-over-plugin</a>の問題？）</p>
+
+<p><a href="https://issues.jenkins-ci.org/browse/JENKINS-19279">https://issues.jenkins-ci.org/browse/JENKINS-19279</a></p>
+
+<p>消せって言われてる…<br/>
+<a href="https://issues.jenkins-ci.org/browse/JENKINS-19389">https://issues.jenkins-ci.org/browse/JENKINS-19389</a></p>
+
+<p>パッチ当てても別のエラーが出るって言われてる？<br/>
+<a href="https://github.com/jenkinsci/publish-over-plugin/pull/3">https://github.com/jenkinsci/publish-over-plugin/pull/3</a></p>
+
+<p>ver1.527以下ならエラーは発生しなかったので、今回はバージョンを下げることにしました。<br/>
+基本的には、 <code>jenkins.war</code> を古い物に変えればいいっぽいです。</p>
+
+<ul>
+<li>Homebrewの場合</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ brew versions jenkins
+</span><span class='line'>
+</span><span class='line'>1.529    git checkout f3bbec8 /usr/local/Library/Formula/jenkins.rb
+</span><span class='line'>1.528    git checkout c8a4d5c /usr/local/Library/Formula/jenkins.rb
+</span><span class='line'>1.527    git checkout e35547d /usr/local/Library/Formula/jenkins.rb
+</span><span class='line'>1.526    git checkout 72cdbc6 /usr/local/Library/Formula/jenkins.rb
+</span><span class='line'>
+</span><span class='line'>…
+</span><span class='line'>
+</span><span class='line'>$ cd /usr/local/Library/Formula
+</span><span class='line'>$ git checkout e35547d /usr/local/Library/Formula/jenkins.rb
+</span><span class='line'>$ brew info jenkins
+</span><span class='line'>
+</span><span class='line'>jenkins: stable 1.527, HEAD
+</span><span class='line'>http://jenkins-ci.org
+</span><span class='line'>/usr/local/Cellar/jenkins/1.527 (3 files, 59M) *
+</span><span class='line'>  Built from source
+</span><span class='line'>  From: https://github.com/mxcl/homebrew/commits/master/Library/Formula/jenkins.rb
+</span><span class='line'>
+</span><span class='line'>$ brew install jenkins</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[JenkinsのアップデートしたらCloudbees Free Enterprise Plugins関連で焦った話]]></title>
